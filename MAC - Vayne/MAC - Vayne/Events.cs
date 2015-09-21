@@ -20,11 +20,6 @@ namespace Vayne
             get { return ObjectManager.Player; }
         }
 
-        public static void Gapcloser_OnGapCloser(AIHeroClient sender, Gapcloser.GapCloserEventArgs e)
-        {
-           
-        }
-
         public static void Orbwalker_OnPreAttack(AttackableUnit target, Orbwalker.PreAttackArgs args)
         {
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
