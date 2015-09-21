@@ -84,10 +84,5 @@ namespace Vayne
             }
         }
 
-        public static void Interrupter_OnInterruptableSpell(Obj_AI_Base sender, InterruptableSpellEventArgs e)
-        {
-            
-        }
-
     }
 }
