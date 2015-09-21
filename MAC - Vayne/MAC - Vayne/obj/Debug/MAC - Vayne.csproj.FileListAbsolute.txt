@@ -1,0 +1,11 @@
+c:\users\gabriel\documents\visual studio 2013\Projects\MAC - Vayne\MAC - Vayne\bin\Debug\MAC - Vayne.exe.config
+c:\users\gabriel\documents\visual studio 2013\Projects\MAC - Vayne\MAC - Vayne\obj\Debug\MAC - Vayne.csprojResolveAssemblyReference.cache
+c:\users\gabriel\documents\visual studio 2013\Projects\MAC - Vayne\MAC - Vayne\bin\Debug\MAC - Vayne.exe
+c:\users\gabriel\documents\visual studio 2013\Projects\MAC - Vayne\MAC - Vayne\bin\Debug\MAC - Vayne.pdb
+c:\users\gabriel\documents\visual studio 2013\Projects\MAC - Vayne\MAC - Vayne\bin\Debug\EloBuddy.dll
+c:\users\gabriel\documents\visual studio 2013\Projects\MAC - Vayne\MAC - Vayne\bin\Debug\EloBuddy.SDK.dll
+c:\users\gabriel\documents\visual studio 2013\Projects\MAC - Vayne\MAC - Vayne\bin\Debug\SharpDX.Direct3D9.dll
+c:\users\gabriel\documents\visual studio 2013\Projects\MAC - Vayne\MAC - Vayne\bin\Debug\SharpDX.dll
+c:\users\gabriel\documents\visual studio 2013\Projects\MAC - Vayne\MAC - Vayne\bin\Debug\Newtonsoft.Json.dll
+c:\users\gabriel\documents\visual studio 2013\Projects\MAC - Vayne\MAC - Vayne\obj\Debug\MAC - Vayne.exe
+c:\users\gabriel\documents\visual studio 2013\Projects\MAC - Vayne\MAC - Vayne\obj\Debug\MAC - Vayne.pdb
