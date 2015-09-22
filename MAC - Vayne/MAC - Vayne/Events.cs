@@ -18,7 +18,6 @@ namespace Vayne
 
         public static void Gapcloser_OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
         {
-<<<<<<< HEAD
             if (Program.isChecked(Program.ComboMenu, "comboAutoCondemnGapCloser"))
             {
                 if (Program.E.IsReady() && Globals._Player.Distance(sender.Position) <= Program.E.Range && sender.IsFacing(Globals._Player))
@@ -26,9 +25,6 @@ namespace Vayne
                     Program.E.Cast(sender);
                 }
             }
-=======
-            get { return ObjectManager.Player; }
->>>>>>> origin/master
         }
 
         public static void Orbwalker_OnPreAttack(AttackableUnit target, Orbwalker.PreAttackArgs args)
@@ -86,8 +82,6 @@ namespace Vayne
             }
         }
 
-<<<<<<< HEAD
-
         public static void AIHeroClient_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (!sender.IsMe) return;
@@ -96,7 +90,5 @@ namespace Vayne
                 Core.DelayAction(Orbwalker.ResetAutoAttack, 250);
             }
         }
-=======
->>>>>>> origin/master
     }
 }
