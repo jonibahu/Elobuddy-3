@@ -6,30 +6,32 @@ using EloBuddy.SDK.Enumerations;
 using EloBuddy.SDK.Events;
 using EloBuddy.SDK.Menu.Values;
 using SharpDX;
+using Vayne.Util;
+using Color = System.Drawing.Color;
+using EloBuddy.SDK.Rendering;
 
 namespace Vayne
 {
     class Events
     {
         public static Obj_AI_Base AAedTarget = null;
-        public static long LastAa;
-        public static int AaStacks;
 
-        public static AIHeroClient _Player
+        public static void Gapcloser_OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
         {
-            get { return ObjectManager.Player; }
-        }
-
-        public static void Gapcloser_OnGapCloser(AIHeroClient sender, Gapcloser.GapCloserEventArgs e)
-        {
-           
+            if (Program.isChecked(Program.ComboMenu, "comboAutoCondemnGapCloser"))
+            {
+                if (Program.E.IsReady() && Globals._Player.Distance(sender.Position) <= Program.E.Range && sender.IsFacing(Globals._Player))
+                {
+                    Program.E.Cast(sender);
+                }
+            }
         }
 
         public static void Orbwalker_OnPreAttack(AttackableUnit target, Orbwalker.PreAttackArgs args)
         {
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
             {
-                if (Program.Q.IsReady() && Program.isChecked(Program.ComboMenu, "comboQ") && target.Distance(_Player) <= (int)_Player.GetAutoAttackRange() + Program.Q.Range)
+                if (Program.Q.IsReady() && Program.isChecked(Program.ComboMenu, "comboQ") && target.Distance(Globals._Player) <= (int)Globals._Player.GetAutoAttackRange() + Program.Q.Range)
                 {
                     if (!Program.isChecked(Program.ComboMenu, "comboQUsage"))
                     {
@@ -44,26 +46,17 @@ namespace Vayne
                     }
                 }
             }
-            
         }
 
         public static void Orbwalker_OnPostAttack(AttackableUnit target, EventArgs args)
         {
-            if (Program.ComboMenu["autoCondemnToggle"].Cast<KeyBind>().CurrentValue && TargetSelector2.GetTarget(Program.E.Range, DamageType.Physical) != null)
-            {
-                Program.E.Cast(TargetSelector2.GetTarget(Program.E.Range, DamageType.Physical));
-                if (!Program.E.IsReady())
-                {
-                    Program.ComboMenu["autoCondemnToggle"].Cast<KeyBind>().CurrentValue = false;
-                }
-            }
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear))
             {
                 if (!Orbwalker.CanAutoAttack && Program.isChecked(Program.LaneClearMenu, "laneQIfCantAttack"))
                 {
-                    foreach (var enem in ObjectManager.Get<Obj_AI_Base>().Where(a => a.IsEnemy).Where(a => _Player.Distance(a) < _Player.GetAutoAttackRange() + Program.Q.Range).Where(a => !a.IsDead))
+                    foreach (var enem in ObjectManager.Get<Obj_AI_Base>().Where(a => a.IsEnemy).Where(a => !a.IsDead))
                     {
-                        if (enem.Health < (_Player.GetAutoAttackDamage(enem) + (30 + (Program.Q.Level * 15))))
+                        if (enem.Health < (Globals._Player.GetAutoAttackDamage(enem) + (30 + (Program.Q.Level * 15))))
                         {
                             Program.Q.Cast(Game.CursorPos);
                         }
@@ -72,7 +65,7 @@ namespace Vayne
             }
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
             {
-                if (Program.Q.IsReady() && Program.isChecked(Program.ComboMenu, "comboQ") && target.Distance(_Player) <= (int)_Player.GetAutoAttackRange() + Program.Q.Range)
+                if (Program.Q.IsReady() && Program.isChecked(Program.ComboMenu, "comboQ"))
                 {
                     if (Program.isChecked(Program.ComboMenu, "comboQUsage"))
                     {
@@ -89,10 +82,14 @@ namespace Vayne
             }
         }
 
-        public static void Interrupter_OnInterruptableSpell(Obj_AI_Base sender, InterruptableSpellEventArgs e)
-        {
-            
-        }
 
+        public static void AIHeroClient_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            if (!sender.IsMe) return;
+            if (args.SData.Name.ToLower().Contains("vaynetumble"))
+            {
+                Core.DelayAction(Orbwalker.ResetAutoAttack, 250);
+            }
+        }
     }
 }

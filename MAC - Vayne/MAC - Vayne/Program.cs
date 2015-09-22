@@ -10,6 +10,7 @@ using EloBuddy.SDK.Menu.Values;
 using EloBuddy.SDK.Rendering;
 using SharpDX;
 using Color = System.Drawing.Color;
+using Vayne.Util;
 
 namespace Vayne
 {
@@ -29,7 +30,7 @@ namespace Vayne
         public static Spell.Targeted E;
         public static Spell.Active R;
 
-        public static bool canCastE = false;
+        public static List<Vector2> Points = new List<Vector2>();
 
         public static Menu Menu,
             ComboMenu,
@@ -41,7 +42,6 @@ namespace Vayne
             if (!_Player.ChampionName.ToLower().Contains("vayne")) return;
 
             Bootstrap.Init(null);
-            TargetSelector2.init();
 
             Q = new Spell.Skillshot(SpellSlot.Q, 360, SkillShotType.Circular);
             E = new Spell.Targeted(SpellSlot.E, 525);
@@ -70,6 +70,8 @@ namespace Vayne
             ComboMenu.Add("comboQFoward", new CheckBox("Use on Target Direction", false));
             ComboMenu.AddLabel("E Settings");
             ComboMenu.Add("comboE", new CheckBox("Use E", true));
+            ComboMenu.Add("comboAutoCondemn", new CheckBox("Auto Condemn Target in combo", true));
+            ComboMenu.Add("comboAutoCondemnGapCloser", new CheckBox("Auto Condemn Gap Closers", true));
             ComboMenu.Add("condenmErrorMargin", new Slider("Subtract Condemn Push by: ", 20, 0, 50));
             ComboMenu.Add("autoCondemnToggle",
                 new KeyBind("Auto Condemn", false, KeyBind.BindTypes.PressToggle, 'W'));
@@ -85,11 +87,14 @@ namespace Vayne
 
             Orbwalker.OnPostAttack += Events.Orbwalker_OnPostAttack;
             Orbwalker.OnPreAttack += Events.Orbwalker_OnPreAttack;
+            Gapcloser.OnGapcloser += Events.Gapcloser_OnGapCloser;
+            AIHeroClient.OnProcessSpellCast += Events.AIHeroClient_OnProcessSpellCast;
+
             Game.OnUpdate += Game_OnUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
 
             Chat.Print("Mechanics Auto Carry: You have 30 seconds to comply.", Color.BlueViolet);
-            Chat.Print("Version: " + "1.1.1", Color.Red);
+            Chat.Print("Version: " + "1.1.3", Color.Red);
 
         }
 
@@ -99,24 +104,29 @@ namespace Vayne
             {
                 new Circle() { Color = Color.White, Radius = Q.Range }.Draw(_Player.Position);
             }
-            if (isChecked(DrawMenu, "drawE") && E.IsReady())
+            if (isChecked(DrawMenu, "drawE"))
             {
-                foreach (var enem in ObjectManager.Get<AIHeroClient>().Where(a => a.IsEnemy).Where(a => _Player.Distance(a) < E.Range).Where(a => !a.IsDead))
+                var condenavel = false;
+                foreach (var enem in ObjectManager.Get<AIHeroClient>().Where(a => a.IsEnemy && E.IsInRange(a)).Where(a => !a.IsDead))
                 {
-                    var condenavel = false;
-                    for(int i = 0; i < 470 - getSliderValue(ComboMenu, "condenmErrorMargin"); i += 10){
-                        var posicao = _Player.Position.Extend(enem.Position, i);
-                        if (posicao.ToNavMeshCell().CollFlags.HasFlag(CollisionFlags.Wall))
+                    var posicao = _Player.Position.Extend(enem.Position, _Player.Distance(enem) - getSliderValue(ComboMenu, "condenmErrorMargin")).To3D();
+                    new Circle() { Color = Color.Blue, Radius = 60 }.Draw(_Player.Position.Extend(enem.Position, _Player.Distance(enem) + 470 - getSliderValue(ComboMenu, "condenmErrorMargin")).To3D());
+
+                    for (int i = 0; i < 470 - getSliderValue(ComboMenu, "condenmErrorMargin"); i += 10)
+                    {
+                        var cPos = _Player.Position.Extend(posicao, _Player.Distance(posicao) + i).To3D();
+                        if (cPos.ToNavMeshCell().CollFlags.HasFlag(CollisionFlags.Wall) || cPos.ToNavMeshCell().CollFlags.HasFlag(CollisionFlags.Building))
                         {
-                            new Circle() { Color = Color.Red, Radius = (470 - getSliderValue(ComboMenu, "condenmErrorMargin")) }.Draw(enem.Position);
                             condenavel = true;
+                            new Circle() { Color = Color.Red, Radius = 470 }.Draw(enem.Position);
+                            Drawing.DrawText(Drawing.WorldToScreen(enem.Position) - new Vector2(30, 0), Color.Red, "CONDEMN THIS SON OF A BITCH !!", 15);
                             break;
                         }
                     }
 
                     if (!condenavel)
                     {
-                        new Circle() { Color = Color.White, Radius = (470 - getSliderValue(ComboMenu, "condenmErrorMargin")) }.Draw(enem.Position);
+                        new Circle() { Color = Color.White, Radius = 470 }.Draw(enem.Position);
                     }
                 }
             } 
@@ -124,7 +134,7 @@ namespace Vayne
 
         private static void Game_OnUpdate(EventArgs args)
         {
-            var target = TargetSelector2.GetTarget((int)_Player.GetAutoAttackRange() + Q.Range, DamageType.Physical);
+            var target = Globals._HeroOrbTarget;
 
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) && target != null && target.IsValid)
             {
@@ -134,6 +144,34 @@ namespace Vayne
                     {
                         R.Cast();
                     }
+                }
+
+                if (Q.IsReady() && isChecked(ComboMenu, "comboQ") && _Player.Distance(target) > _Player.GetAutoAttackRange())
+                {
+                    Q.Cast(Game.CursorPos);
+                }
+
+                if (E.IsReady() && isChecked(ComboMenu, "comboAutoCondemn") && target != null && target.IsValid && E.IsInRange(target))
+                {
+                    foreach (var enem in ObjectManager.Get<AIHeroClient>().Where(a => a.IsEnemy && Program.E.IsInRange(a)).Where(a => !a.IsDead))
+                    {
+                        var posicao = Globals._Player.Position.Extend(enem.Position, Globals._Player.Distance(enem) - Program.getSliderValue(Program.ComboMenu, "condenmErrorMargin")).To3D();
+                        for (int i = 0; i < 470 - Program.getSliderValue(Program.ComboMenu, "condenmErrorMargin"); i += 10)
+                        {
+                            var cPos = Globals._Player.Position.Extend(posicao, Globals._Player.Distance(posicao) + i).To3D();
+                            if (cPos.ToNavMeshCell().CollFlags.HasFlag(CollisionFlags.Wall) || cPos.ToNavMeshCell().CollFlags.HasFlag(CollisionFlags.Building))
+                            {
+                                Program.E.Cast(enem);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (E.IsReady() && isChecked(ComboMenu, "autoCondemnToggle"))
+                {
+                    E.Cast(target);
+                    ComboMenu["autoCondemnToggle"].Cast<CheckBox>().CurrentValue = false;
                 }
             }
         }
