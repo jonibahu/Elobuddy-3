@@ -1,4 +1,6 @@
-﻿using EloBuddy;
+﻿using System;
+using System.Linq;
+using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Enumerations;
 using EloBuddy.SDK.Events;
@@ -7,12 +9,9 @@ using EloBuddy.SDK.Menu.Values;
 using EloBuddy.SDK.Rendering;
 using MAC_Vayne.Util;
 using SharpDX;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Color = System.Drawing.Color;
+
+// ReSharper disable All
 
 namespace MAC_Vayne.Plugin
 {
@@ -50,7 +49,7 @@ namespace MAC_Vayne.Plugin
          Misc
          */
 
-        public static AIHeroClient target;
+        public static AIHeroClient _target;
 
         #endregion
 
@@ -198,15 +197,15 @@ namespace MAC_Vayne.Plugin
 
             if (orbwalkermode == Orbwalker.ActiveModes.Combo)
             {
-                if (Misc.isChecked(ComboMenu, "comboQ") && Q.IsReady())
+                if (Misc.isChecked(ComboMenu, "comboQ") && Q.IsReady() && !Misc.isChecked(ComboMenu, "qsQUsage"))
                 {
                     if (Misc.isChecked(ComboMenu, "qsQDirection"))
                     {
-                        Q.Cast(target.Position);
+                        if (target != null) Q.Cast(target.Position);
                     }
                     else
                     {
-                        Q.Cast(Game.CursorPos);
+                        Player.CastSpell(SpellSlot.Q, Game.CursorPos);
                     }
                 }
             }
@@ -215,7 +214,25 @@ namespace MAC_Vayne.Plugin
 
         public  static void OnBeforeAttack(AttackableUnit target, Orbwalker.PreAttackArgs args)
         {
-            
+            if (target != null && (!target.IsValid || target.IsDead))
+                return;
+
+            var orbwalkermode = Orbwalker.ActiveModesFlags;
+
+            if (orbwalkermode == Orbwalker.ActiveModes.Combo)
+            {
+                if (Misc.isChecked(ComboMenu, "comboQ") && Q.IsReady() && Misc.isChecked(ComboMenu, "qsQUsage"))
+                {
+                    if (Misc.isChecked(ComboMenu, "qsQDirection"))
+                    {
+                        if (target != null) Q.Cast(target.Position);
+                    }
+                    else
+                    {
+                        Player.CastSpell(SpellSlot.Q, Game.CursorPos);
+                    }
+                }
+            }
         }
 
         public  static void OnProcessSpell(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
@@ -254,7 +271,7 @@ namespace MAC_Vayne.Plugin
 
         public  static void OnCombo()
         {
-            if (target == null || !target.IsValid)
+            if (_target == null || !_target.IsValid)
                 return;
 
             if (Misc.isChecked(ComboMenu, "comboR") && R.IsReady())
@@ -264,9 +281,20 @@ namespace MAC_Vayne.Plugin
                     R.Cast();
                 }
             }
-            if (Misc.isChecked(ComboMenu, "comboQ") && Q.IsReady() && _Player.Distance(target.Position) <= _Player.GetAutoAttackRange() + Q.Range)
+            if (Misc.isChecked(ComboMenu, "comboQ") && Q.IsReady())
             {
-                Q.Cast(Game.CursorPos);
+                if (Misc.isChecked(ComboMenu, "qsQOutAA") && _Player.Distance(_target.Position) > _Player.GetAutoAttackRange() && _Player.Distance(_target.Position) < (_Player.GetAutoAttackRange() + Q.Range + 50))
+                {
+                    if (Misc.isChecked(ComboMenu, "qsQDirection"))
+                    {
+                        Q.Cast(_target.Position);
+                    }
+                    else
+                    {
+                        
+                        Player.CastSpell(SpellSlot.Q, Game.CursorPos);
+                    }
+                }
             }
 
             if (Misc.isChecked(ComboMenu, "comboE") && E.IsReady())
@@ -300,7 +328,7 @@ namespace MAC_Vayne.Plugin
 
         public  static void OnGameUpdate(EventArgs args)
         {
-            target = TargetSelector.GetTarget(1100, DamageType.Physical);
+            _target = TargetSelector.GetTarget(1100, DamageType.Physical);
             switch (Orbwalker.ActiveModesFlags)
             {
                 case Orbwalker.ActiveModes.Combo:
