@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MAC - Vayne")]
+[assembly: AssemblyTitle("MAC-Vayne")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MAC - Vayne")]
+[assembly: AssemblyProduct("MAC-Vayne")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("2a3c9fb1-4ab0-4a48-88d3-94825ea6d950")]
+[assembly: Guid("789336a2-df3b-468d-ae37-b0a9df088996")]
 
 // Version information for an assembly consists of the following four values:
 //
