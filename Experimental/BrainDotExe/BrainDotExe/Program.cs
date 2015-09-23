@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EloBuddy.SDK.Events;
 
 namespace BrainDotExe
 {
@@ -10,6 +11,12 @@ namespace BrainDotExe
     {
         static void Main(string[] args)
         {
+            Loading.OnLoadingComplete += Game_OnStart;
+        }
+
+        private static void Game_OnStart(EventArgs args)
+        {
+           
         }
     }
 }
