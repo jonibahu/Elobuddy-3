@@ -62,9 +62,7 @@
     <Compile Include="Draw\LastHit.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Util\JungleMonsters.cs" />
     <Compile Include="Util\Misc.cs" />
-    <Compile Include="Util\SummonersRift.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

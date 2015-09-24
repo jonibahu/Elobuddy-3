@@ -297,7 +297,7 @@ namespace BrainDotExe.Draw
 
             foreach (GameObject objAiBase in ObjectManager.Get<GameObject>())
             {
-                Obj_AI_Base_OnCreate(objAiBase, new EventArgs());
+                //Obj_AI_Base_OnCreate(objAiBase, new EventArgs());
             }
 
             foreach (var hero in ObjectManager.Get<AIHeroClient>())
