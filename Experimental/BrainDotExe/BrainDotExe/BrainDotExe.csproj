@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Utility.cs" />
+    <Compile Include="Draw\Cooldown.cs" />
     <Compile Include="Draw\JungleTimers.cs" />
     <Compile Include="Draw\LastHit.cs" />
     <Compile Include="Program.cs" />
