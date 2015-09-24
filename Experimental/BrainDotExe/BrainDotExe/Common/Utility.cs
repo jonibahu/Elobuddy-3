@@ -94,24 +94,6 @@ namespace BrainDotExe.Common
             return slot != null && slot.SpellSlot != SpellSlot.Unknown;
         }
 
-        /// <summary>
-        ///     Returns the unit's health percentage (From 0 to 100).
-        /// </summary>
-        [Obsolete("Use HealthPercent attribute.", false)]
-        public static float HealthPercentage(this Obj_AI_Base unit)
-        {
-            return unit.Health / unit.MaxHealth * 100;
-        }
-
-        /// <summary>
-        ///     Returns the unit's mana percentage (From 0 to 100).
-        /// </summary>
-        [Obsolete("Use ManaPercent attribute.", false)]
-        public static float ManaPercentage(this Obj_AI_Base unit)
-        {
-            return unit.Mana / unit.MaxMana * 100;
-        }
-
         public static float TotalMagicalDamage(this AIHeroClient target)
         {
             return target.BaseAbilityDamage + target.FlatMagicDamageMod;
@@ -249,25 +231,6 @@ namespace BrainDotExe.Common
         }
 
         /// <summary>
-        ///     Returns if the unit has the buff and it is active
-        /// </summary>
-        [Obsolete("Use Obj_AI_Base.HasBuff")]
-        public static bool HasBuff(this Obj_AI_Base unit,
-            string buffName,
-            bool dontUseDisplayName = false,
-            bool kappa = true)
-        {
-            return
-                unit.Buffs.Any(
-                    buff =>
-                        ((dontUseDisplayName &&
-                          String.Equals(buff.Name, buffName, StringComparison.CurrentCultureIgnoreCase)) ||
-                         (!dontUseDisplayName &&
-                          String.Equals(buff.DisplayName, buffName, StringComparison.CurrentCultureIgnoreCase))) &&
-                        buff.IsValidBuff());
-        }
-
-        /// <summary>
         ///     Returns the spell slot with the name.
         /// </summary>
         public static SpellSlot GetSpellSlot(this AIHeroClient unit, string name)
@@ -308,18 +271,6 @@ namespace BrainDotExe.Common
         {
             var nav = NavMesh.WorldToGrid(position.X, position.Y);
             return NavMesh.GetCell((short)nav.X, (short)nav.Y);
-        }
-
-        [Obsolete("Use CountEnemiesInRange", false)]
-        public static int CountEnemysInRange(this Obj_AI_Base unit, float range)
-        {
-            return unit.ServerPosition.CountEnemiesInRange(range);
-        }
-
-        [Obsolete("Use CountEnemiesInRange", false)]
-        public static int CountEnemysInRange(this Vector3 point, float range)
-        {
-            return point.CountEnemiesInRange(range);
         }
 
         /// <summary>
