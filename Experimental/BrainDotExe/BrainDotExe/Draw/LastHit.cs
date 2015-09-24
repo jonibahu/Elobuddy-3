@@ -4,28 +4,41 @@ using EloBuddy;
 using EloBuddy.SDK;
 using SharpDX;
 using Color = System.Drawing.Color;
+using EloBuddy.SDK.Menu;
+using EloBuddy.SDK.Menu.Values;
+using BrainDotExe.Util;
 
 namespace BrainDotExe.Draw
 {
     internal class LastHit
     {
-        public static AIHeroClient _Player
+
+        public static Menu LastHitMenu;
+
+        public static void Init()
         {
-            get { return ObjectManager.Player; }
+
+            LastHitMenu = Program.DrawMenu.AddSubMenu("Last Hit", "lastHitDraw");
+            LastHitMenu.AddGroupLabel("Last Hit");
+            LastHitMenu.Add("drawLastHit", new CheckBox("Draw Last Hit Marker", true));
+
         }
 
         public static void DrawLastHit_OnDraw(EventArgs args)
         {
-            var distM = _Player.GetAutoAttackRange() + 500;
-            foreach (var minion in ObjectManager.Get<Obj_AI_Minion>()
-                .Where(m => m.CountEnemiesInRange(distM) >= _Player.CountEnemiesInRange(distM)
-                            && m.IsEnemy))
+            if(Misc.isChecked(LastHitMenu, "drawLastHit"))
             {
-                if (!minion.IsValidTarget(distM)) continue;
-                var hpBar = new Vector2(minion.HPBarPosition.X + 14, minion.HPBarPosition.Y + 12);
-                if (minion.Health <= _Player.GetAutoAttackDamage(minion, true))
+                var distM = Program._Player.GetAutoAttackRange() + 500;
+                foreach (var minion in ObjectManager.Get<Obj_AI_Minion>()
+                    .Where(m => m.CountEnemiesInRange(distM) >= Program._Player.CountEnemiesInRange(distM)
+                                && m.IsEnemy))
                 {
-                    Drawing.DrawText(hpBar, Color.White, ">                        <", 100); // [:] SIZE NOT WORKING [:]
+                    if (!minion.IsValidTarget(distM)) continue;
+                    var hpBar = new Vector2(minion.HPBarPosition.X + 14, minion.HPBarPosition.Y + 12);
+                    if (minion.Health <= Program._Player.GetAutoAttackDamage(minion, true))
+                    {
+                        Drawing.DrawText(hpBar, Color.Green, ">                        <", 100); // [:] SIZE NOT WORKING [:]
+                    }
                 }
             }
         }
