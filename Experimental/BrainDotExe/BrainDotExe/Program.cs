@@ -12,7 +12,7 @@ namespace BrainDotExe
 
         private static void Game_OnStart(EventArgs args)
         {
-           
+           // Kk2 passou por aqui
         }
     }
 }
