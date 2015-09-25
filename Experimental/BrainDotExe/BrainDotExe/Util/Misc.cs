@@ -25,6 +25,59 @@ namespace BrainDotExe.Util
             Drawing.DrawText(Drawing.WorldToScreen(pos), color, text, size);
         }
 
+        public static void DrawMarkPoint(Vector3 pos, Color color, int size = 30, float thickness = 2f)
+        {
+            {
+                var lineLU = Drawing.WorldToScreen(pos);
+
+                lineLU.Y -= 120;
+                lineLU.X -= 75;
+
+                var lineLD = lineLU;
+
+                lineLD.X -= size;
+                lineLD.Y -= size;
+
+                var lineRU = Drawing.WorldToScreen(pos);
+
+                lineRU.Y -= 120;
+                lineRU.X -= 75;
+
+                var lineRD = lineRU;
+
+                lineRD.X -= size;
+                lineRD.Y += size;
+
+                Drawing.DrawLine(lineRD, lineRU, thickness, color);
+                Drawing.DrawLine(lineLD, lineLU, thickness, color);
+            }
+
+            {
+                var lineLU = Drawing.WorldToScreen(pos);
+
+                lineLU.Y -= 120;
+                lineLU.X += 75;
+
+                var lineLD = lineLU;
+
+                lineLD.X += size;
+                lineLD.Y -= size;
+
+                var lineRU = Drawing.WorldToScreen(pos);
+
+                lineRU.Y -= 120;
+                lineRU.X += 75;
+
+                var lineRD = lineRU;
+
+                lineRD.X += size;
+                lineRD.Y += size;
+
+                Drawing.DrawLine(lineRD, lineRU, thickness, color);
+                Drawing.DrawLine(lineLD, lineLU, thickness, color);
+            }
+        }
+
         #endregion
 
         #region Util Functions
