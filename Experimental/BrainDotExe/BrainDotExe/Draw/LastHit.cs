@@ -27,7 +27,6 @@ namespace BrainDotExe.Draw
             LastHitMenu.Add("drawLastHit", new CheckBox("Draw Last Hit Marker", true));
 
             Drawing.OnDraw += DrawLastHit_OnDraw;
-
         }
 
         public static void DrawLastHit_OnDraw(EventArgs args)

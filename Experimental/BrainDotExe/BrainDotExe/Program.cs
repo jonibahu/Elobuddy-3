@@ -26,6 +26,7 @@ namespace BrainDotExe
             DrawMenu.Add("drawDisable", new CheckBox("Turn off all drawings", false));
 
             LastHit.Init();
+            JungleTimers.Init();
 
         }
 
