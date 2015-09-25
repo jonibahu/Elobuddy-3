@@ -113,7 +113,7 @@ namespace BrainDotExe.Draw
             }
             #endregion
 
-            Drawing.OnEndScene += Drawing_OnEndScene;
+            Drawing.OnEndScene += JungleTimers_OnEndScene;
             GameObject.OnCreate += GameObjectOnCreate;
             GameObject.OnDelete += GameObjectOnDelete;
             Game.OnUpdate += OnGameUpdate;
@@ -561,8 +561,10 @@ namespace BrainDotExe.Draw
             }
         }
 
-        private static void Drawing_OnEndScene(EventArgs args)
+        private static void JungleTimers_OnEndScene(EventArgs args)
         {
+            if (Misc.isChecked(Program.DrawMenu, "drawDisable")) return;
+
             if (!Misc.isChecked(JungleTimersMenu, "drawjungleTime"))
                 return;
 

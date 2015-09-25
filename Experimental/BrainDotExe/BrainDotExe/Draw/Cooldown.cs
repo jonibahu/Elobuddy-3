@@ -8,6 +8,9 @@ using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Rendering;
 using Font = SharpDX.Direct3D9.Font;
+using EloBuddy.SDK.Menu.Values;
+using EloBuddy.SDK.Menu;
+using BrainDotExe.Util;
 
 namespace BrainDotExe.Draw
 {
@@ -15,6 +18,7 @@ namespace BrainDotExe.Draw
     {
         #region Vars
 
+        public static Menu CooldonMenu;
         private static int X;  // HPBar Screen X Position
         private static int Y;  // HPBar Screen Y Position
         private static int SpellLevelX; // Coord of X Spell Position
@@ -28,35 +32,46 @@ namespace BrainDotExe.Draw
         public static SpellSlot[] SummonerSpellSlots = { SpellSlot.Summoner1, SpellSlot.Summoner2 };
         public static SpellSlot[] SpellSlots = { SpellSlot.Q, SpellSlot.W, SpellSlot.E, SpellSlot.R };
 
+        public static void Init()
+        {
+            CooldonMenu = Program.Menu.AddSubMenu("Tracker ", "cooldownDraw");
+            CooldonMenu.AddGroupLabel("Tracker Cooldown");
+            CooldonMenu.Add("drawCoolDowns", new CheckBox("Draw Cooldown of abilities", true));
+
+            Drawing.OnDraw += Cooldown_OnDraw;
+        }
+
         #endregion
         public static void Cooldown_OnDraw(EventArgs args)
         {
+            if (Misc.isChecked(Program.DrawMenu, "drawDisable")) return;
+
             // some menu verification here
             foreach (
                 var Heroes in ObjectManager.Get<AIHeroClient>()
                 .Where(h => h.IsValid && !h.IsMe && h.IsHPBarRendered))
             {
-        
-                    for (int spell = 0; spell < SpellSlots.Count(); spell++)
-                    {
-                        var getSpell = Heroes.Spellbook.GetSpell(SpellSlots[spell]);
-                        X = (int) Heroes.HPBarPosition.X - 12 + (spell*25);
-                        Y = (int)Heroes.HPBarPosition.Y + 35;
-                        var getSpellCD = getSpell.CooldownExpires - Game.Time;
-                        var spellString = string.Format(getSpellCD < 1f ? "{0:0.0}" : "{0:0}", getSpellCD);
-                        
-                        Drawing.DrawText(X,Y,
-                            getSpell.Level < 1 ? Color.Gray : getSpellCD > 0 && getSpellCD <= 4 ? Color.Red : getSpellCD > 0 ? Color.Yellow : Color.White, // infos da cor
-                            getSpellCD > 0 ? spellString : SpellSlots[spell].ToString()); // infos do escrito
-                        /*
-                        DisplayTextFont.DrawText(null,
-                            getSpellCD > 0 ? spellString : SpellSlots[spell].ToString(),
-                            X,
-                            Y,
-                            getSpell.Level < 1 ? SharpDX.Color.Gray : getSpellCD > 0 && getSpellCD <= 4 ? SharpDX.Color.Red : getSpellCD > 0 ? SharpDX.Color.Yellow : SharpDX.Color.White
-                            );
-                            */
-                    }
+
+                for (int spell = 0; spell < SpellSlots.Count(); spell++)
+                {
+                    var getSpell = Heroes.Spellbook.GetSpell(SpellSlots[spell]);
+                    X = (int)Heroes.HPBarPosition.X - 12 + (spell * 25);
+                    Y = (int)Heroes.HPBarPosition.Y + 35;
+                    var getSpellCD = getSpell.CooldownExpires - Game.Time;
+                    var spellString = string.Format(getSpellCD < 1f ? "{0:0.0}" : "{0:0}", getSpellCD);
+
+                    Drawing.DrawText(X, Y,
+                        getSpell.Level < 1 ? Color.Gray : getSpellCD > 0 && getSpellCD <= 4 ? Color.Red : getSpellCD > 0 ? Color.Yellow : Color.White, // infos da cor
+                        getSpellCD > 0 ? spellString : SpellSlots[spell].ToString()); // infos do escrito
+                    /*
+                    DisplayTextFont.DrawText(null,
+                        getSpellCD > 0 ? spellString : SpellSlots[spell].ToString(),
+                        X,
+                        Y,
+                        getSpell.Level < 1 ? SharpDX.Color.Gray : getSpellCD > 0 && getSpellCD <= 4 ? SharpDX.Color.Red : getSpellCD > 0 ? SharpDX.Color.Yellow : SharpDX.Color.White
+                        );
+                        */
+                }
 
                 for (int summoner = 0; summoner < SummonerSpellSlots.Count(); summoner++)
                 {
@@ -134,10 +149,8 @@ namespace BrainDotExe.Draw
                     //    SharpDX.Color.Red : SharpDX.Color.White
                     //    );
                 }
-                    
-                } 
+
             }
         }
-
-
     }
+}

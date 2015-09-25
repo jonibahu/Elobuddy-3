@@ -27,6 +27,7 @@ namespace BrainDotExe.Util
 
         public static void DrawMarkPoint(Vector3 pos, Color color, int size = 30, float thickness = 2f)
         {
+            //var hpBar = new Vector2(minion.HPBarPosition.X + 14, minion.HPBarPosition.Y + 12);
             {
                 var lineLU = Drawing.WorldToScreen(pos);
 

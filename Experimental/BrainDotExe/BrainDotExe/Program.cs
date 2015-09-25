@@ -4,6 +4,9 @@ using EloBuddy.SDK.Events;
 using EloBuddy.SDK.Menu;
 using EloBuddy;
 using EloBuddy.SDK.Menu.Values;
+using BrainDotExe.Util;
+using System.Reflection;
+using System.ComponentModel;
 
 namespace BrainDotExe
 {
@@ -24,9 +27,12 @@ namespace BrainDotExe
 
             DrawMenu = Menu.AddSubMenu("Draw", "brainDraw");
             DrawMenu.Add("drawDisable", new CheckBox("Turn off all drawings", false));
+            DrawMenu.Add("streamMode", new CheckBox("Stream Mode", false));
 
             LastHit.Init();
             JungleTimers.Init();
+            AttackRanges.Init();
+            CloneRevelaer.Init();
 
         }
 
