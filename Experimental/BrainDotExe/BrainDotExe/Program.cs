@@ -31,6 +31,7 @@ namespace BrainDotExe
 
             LastHit.Init();
             JungleTimers.Init();
+            Cooldown.Init();
             AttackRanges.Init();
             CloneRevelaer.Init();
 

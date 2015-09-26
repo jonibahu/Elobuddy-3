@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EloBuddy;
+using EloBuddy.SDK;
 using SharpDX;
 using Color = System.Drawing.Color;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
+using EloBuddy.SDK.Rendering;
 
 namespace BrainDotExe.Util
 {
@@ -25,14 +27,14 @@ namespace BrainDotExe.Util
             Drawing.DrawText(Drawing.WorldToScreen(pos), color, text, size);
         }
 
-        public static void DrawMarkPoint(Vector3 pos, Color color, int size = 30, float thickness = 2f)
+        public static void DrawMarkPoint(Obj_AI_Base target, Color color, int size = 30, float thickness = 2f)
         {
-            //var hpBar = new Vector2(minion.HPBarPosition.X + 14, minion.HPBarPosition.Y + 12);
+            var pos = target.Position; 
             {
                 var lineLU = Drawing.WorldToScreen(pos);
 
-                lineLU.Y -= 120;
-                lineLU.X -= 75;
+                lineLU.Y -= 45;
+                lineLU.X -= 50;
 
                 var lineLD = lineLU;
 
@@ -41,8 +43,8 @@ namespace BrainDotExe.Util
 
                 var lineRU = Drawing.WorldToScreen(pos);
 
-                lineRU.Y -= 120;
-                lineRU.X -= 75;
+                lineRU.Y -= 45;
+                lineRU.X -= 50;
 
                 var lineRD = lineRU;
 
@@ -56,8 +58,8 @@ namespace BrainDotExe.Util
             {
                 var lineLU = Drawing.WorldToScreen(pos);
 
-                lineLU.Y -= 120;
-                lineLU.X += 75;
+                lineLU.Y -= 45;
+                lineLU.X += 45;
 
                 var lineLD = lineLU;
 
@@ -66,8 +68,8 @@ namespace BrainDotExe.Util
 
                 var lineRU = Drawing.WorldToScreen(pos);
 
-                lineRU.Y -= 120;
-                lineRU.X += 75;
+                lineRU.Y -= 45;
+                lineRU.X += 45;
 
                 var lineRD = lineRU;
 

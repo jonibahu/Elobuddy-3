@@ -42,10 +42,10 @@ namespace BrainDotExe.Draw
                     if (!minion.IsValidTarget(distM)) continue;
                     if (minion.Health <= Program._Player.GetAutoAttackDamage(minion, true))
                     {
-                        Misc.DrawMarkPoint(minion.Position, Color.Green, 15, 2f);
+                        Misc.DrawMarkPoint(minion, Color.Red, 15, 2f);
                     }else if (minion.Health <= (Program._Player.GetAutoAttackDamage(minion, true) + Program._Player.GetAutoAttackDamage(minion, true)))
                     {
-                        Misc.DrawMarkPoint(minion.Position, Color.Yellow, 15, 2f);
+                        Misc.DrawMarkPoint(minion, Color.Yellow, 15, 2f);
                     }
                 }
             }
