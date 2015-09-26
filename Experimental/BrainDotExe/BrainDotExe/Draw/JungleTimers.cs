@@ -47,9 +47,9 @@ namespace BrainDotExe.Draw
 
                     if (diffTime > 0)
                     {
-                        float seconds = diffTime % 60;
-                        float minutes = diffTime / 60;
-                        string spellString = minutes <= 0 ? Math.Round(seconds) + "" : Math.Round(minutes) + ":" + Math.Round(seconds);
+                        var seconds = diffTime % 60;
+                        var minutes = diffTime / 60;
+                        var spellString = minutes <= 0 ? Math.Round(seconds) + "" : Math.Round(minutes) + ":" + Math.Round(seconds);
 
                         Drawing.DrawText(Drawing.WorldToMinimap(timer.Item2.Position).X - 5, Drawing.WorldToMinimap(timer.Item2.Position).Y - 5,
                             Color.White, // infos da cor
