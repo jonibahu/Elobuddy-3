@@ -34,6 +34,7 @@ namespace BrainDotExe
             Cooldown.Init();
             AttackRanges.Init();
             CloneRevelaer.Init();
+            Pink.Init();
 
         }
 
