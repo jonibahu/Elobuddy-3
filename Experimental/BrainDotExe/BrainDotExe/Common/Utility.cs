@@ -75,6 +75,18 @@ namespace BrainDotExe.Common
             return hero != null && hero.IsValid;
         }
 
+        public static bool InFountain(Vector2 postion)
+        {
+            float fountainRange = 562500; //750 * 750
+            var map = Map.GetMap();
+            if (map != null && map.Type == Map.MapType.SummonersRift)
+            {
+                fountainRange = 1102500; //1050 * 1050
+            }
+            return ObjectManager.Get<Obj_SpawnPoint>()
+                       .Any(sp => postion.Distance(sp.Position, true) < fountainRange);
+        }
+
         public static bool IsChampion(this Obj_AI_Base unit, string championName)
         {
             var hero = unit as AIHeroClient;

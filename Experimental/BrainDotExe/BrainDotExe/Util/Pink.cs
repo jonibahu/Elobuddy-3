@@ -97,7 +97,7 @@ namespace BrainDotExe.Util
                 }
             }
 
-            // Le Blank
+            // Le Blanc
             var LeBlank = HeroManager.Enemies.Find(x => x.ChampionName.ToLower() == "leblanc");
             if (LeBlank != null)
             {

@@ -2,7 +2,6 @@
 using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
-using SharpDX;
 using Color = System.Drawing.Color;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;

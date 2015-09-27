@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BrainDotExe.Util;
 using EloBuddy;
-using EloBuddy.SDK;
-using SharpDX.Direct3D9;
+using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 using SharpDX;
-using Utility = BrainDotExe.Common.Utility;
-using System.IO;
-using EloBuddy.SDK.Menu;
-using BrainDotExe.Util;
 using Color = System.Drawing.Color;
+using Utility = BrainDotExe.Common.Utility;
 
 namespace BrainDotExe.Draw
 {

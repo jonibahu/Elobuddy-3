@@ -5,8 +5,6 @@ using EloBuddy.SDK.Menu;
 using EloBuddy;
 using EloBuddy.SDK.Menu.Values;
 using BrainDotExe.Util;
-using System.Reflection;
-using System.ComponentModel;
 
 namespace BrainDotExe
 {
@@ -35,6 +33,7 @@ namespace BrainDotExe
             AttackRanges.Init();
             CloneRevelaer.Init();
             Pink.Init();
+            TowerUtil.Init();
 
         }
 
@@ -49,7 +48,7 @@ namespace BrainDotExe
             get { return ObjectManager.Player; }
         }
 
-        public static String G_version = "1.0.0";
+        public static String G_version = "1.2.0";
         public static String G_charname = _Player.ChampionName;
 
         /*
