@@ -42,7 +42,7 @@ namespace BrainDotExe.Draw
 
             if (Misc.isChecked(TowerUtilMenu, "drawRanges"))
             {
-                foreach (var turret in ObjectManager.Get<Obj_Turret>().Where(a => a.IsEnemy).Where(a => !a.IsDead).Where(a => _Player.Distance(a) <= 2000))
+                foreach (var turret in ObjectManager.Get<Obj_Turret>().Where(a => a.IsEnemy).Where(a => !a.IsDead).Where(a => _Player.Distance(a) <= 2000).Where(a => a.Health >= 1))
                 {
                     if (_Player.Distance(turret) <= 870)
                         new Circle() { Color = Color.Red, Radius = 870, BorderWidth = 2f }.Draw(turret.Position);
