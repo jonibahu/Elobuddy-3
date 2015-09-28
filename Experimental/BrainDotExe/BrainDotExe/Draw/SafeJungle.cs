@@ -5,7 +5,7 @@ using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 using SharpDX;
 using System;
-using static BrainDotExe.Common.Render;
+using Circle = BrainDotExe.Common.Render.Circle;
 using Color = System.Drawing.Color;
 
 namespace BrainDotExe.Draw
