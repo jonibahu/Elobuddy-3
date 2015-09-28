@@ -35,6 +35,8 @@ namespace BrainDotExe
             Pink.Init();
             TowerUtil.Init();
 
+            //SafeJungle.Init(); Precisa Testar
+
         }
 
         #region Variaveis

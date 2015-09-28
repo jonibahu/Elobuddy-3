@@ -36,7 +36,6 @@ namespace BrainDotExe.Draw
 
             if (Misc.isChecked(AttackRangeMenu, "drawRanges"))
             {
-             
                 if(Misc.isChecked(AttackRangeMenu, "drawYLastHit"))
                     new Circle() { Color = Color.White, Radius = _Player.GetAutoAttackRange(), BorderWidth = 2f }.Draw(_Player.Position);
 
