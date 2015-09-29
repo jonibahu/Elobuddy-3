@@ -44,7 +44,7 @@ namespace BrainDotExe.Draw
         #endregion
         public static void Cooldown_OnDraw(EventArgs args)
         {
-            if (Misc.isChecked(Program.DrawMenu, "drawDisable")) return;
+            if (Misc.isChecked(Program.DrawMenu, "drawDisable") || Misc.isChecked(Program.DrawMenu, "drawCoolDowns")) return;
 
             // some menu verification here
             foreach (
