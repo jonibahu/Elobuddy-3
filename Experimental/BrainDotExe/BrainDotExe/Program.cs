@@ -34,6 +34,7 @@ namespace BrainDotExe
             CloneRevelaer.Init();
             Pink.Init();
             TowerUtil.Init();
+            SmiteME.Init();
 
             //SafeJungle.Init();// Precisa Testar
             //BlinkDetector.Init();// Precisa Testar
