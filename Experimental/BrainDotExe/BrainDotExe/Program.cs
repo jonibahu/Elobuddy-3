@@ -35,8 +35,8 @@ namespace BrainDotExe
             Pink.Init();
             TowerUtil.Init();
 
-            //SafeJungle.Init(); Precisa Testar
-            //BlinkDetector.Init(); Precisa Testar
+            //SafeJungle.Init();// Precisa Testar
+            //BlinkDetector.Init();// Precisa Testar
 
         }
 

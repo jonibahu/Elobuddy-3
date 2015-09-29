@@ -8,6 +8,7 @@ using SharpDX;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BrainDotExe.Common;
 using Color = System.Drawing.Color;
 
 namespace BrainDotExe.Draw
@@ -46,8 +47,8 @@ namespace BrainDotExe.Draw
                     var diffTime = time.Item1 - Game.Time;
                     if (diffTime > 0)
                     {
-                        new Circle() { Color = Color.White, Radius = 100f, BorderWidth = 2f }.Draw(time.Item2);
-                        Misc.DrawLine(_Player.Position, time.Item2, Color.Yellow);
+                        new Circle() { Color = Color.Yellow, Radius = 100f, BorderWidth = 2f }.Draw(time.Item2);
+                        //Misc.DrawLine(_Player.Position, time.Item2, Color.Yellow);
                     }
                     else
                     {
@@ -64,13 +65,20 @@ namespace BrainDotExe.Draw
 
         private static void OnProcessSpellCast(Obj_AI_Base caster, GameObjectProcessSpellCastEventArgs args)
         {
-            if (caster.IsDead || !caster.IsEnemy) return;
+            if (!caster.IsChampion()) return;
+
+            Console.WriteLine(args.SData.Name);
 
             switch (args.SData.Name)
             {
-                case "flash":
+                case "EzrealArcaneShift":
                     var timer = new Tuple<float, Vector3>(Game.Time + Misc.getSliderValue(BlinkDetectorMenu, "drawSeconds"), args.End);
                     times.Add(timer);
+                    break;
+                case "summoneflash":
+                    Console.WriteLine(args.End);
+                    var timerf = new Tuple<float, Vector3>(Game.Time + Misc.getSliderValue(BlinkDetectorMenu, "drawSeconds"), args.End);
+                    times.Add(timerf);
                     break;
             }
 
