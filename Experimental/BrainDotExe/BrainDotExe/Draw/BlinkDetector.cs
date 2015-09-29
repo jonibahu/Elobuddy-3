@@ -48,7 +48,6 @@ namespace BrainDotExe.Draw
                     if (diffTime > 0)
                     {
                         new Circle() { Color = Color.Yellow, Radius = 100f, BorderWidth = 2f }.Draw(time.Item2);
-                        //Misc.DrawLine(_Player.Position, time.Item2, Color.Yellow);
                     }
                     else
                     {
@@ -67,19 +66,10 @@ namespace BrainDotExe.Draw
         {
             if (!caster.IsChampion()) return;
 
-            Console.WriteLine(args.SData.Name);
-
-            switch (args.SData.Name)
+            if (args.SData.Name == "EzrealArcaneShift" || args.SData.Name == "summonerflash")
             {
-                case "EzrealArcaneShift":
-                    var timer = new Tuple<float, Vector3>(Game.Time + Misc.getSliderValue(BlinkDetectorMenu, "drawSeconds"), args.End);
-                    times.Add(timer);
-                    break;
-                case "summoneflash":
-                    Console.WriteLine(args.End);
-                    var timerf = new Tuple<float, Vector3>(Game.Time + Misc.getSliderValue(BlinkDetectorMenu, "drawSeconds"), args.End);
-                    times.Add(timerf);
-                    break;
+                var timer = new Tuple<float, Vector3>(Game.Time + Misc.getSliderValue(BlinkDetectorMenu, "drawSeconds"), args.End);
+                times.Add(timer);
             }
 
         }
