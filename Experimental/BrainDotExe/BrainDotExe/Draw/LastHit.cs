@@ -22,7 +22,7 @@ namespace BrainDotExe.Draw
         {
             LastHitMenu = Program.Menu.AddSubMenu("Last Hit Marker ", "lastHitDraw");
             LastHitMenu.AddGroupLabel("Last Hit Marker");
-            LastHitMenu.Add("drawLastHit", new CheckBox("Draw Last Hit Marker", true));
+            LastHitMenu.Add("drawLastHit", new CheckBox("Draw Last Hit Marker", false));
 
             Drawing.OnDraw += LastHit_OnDraw;
         }
