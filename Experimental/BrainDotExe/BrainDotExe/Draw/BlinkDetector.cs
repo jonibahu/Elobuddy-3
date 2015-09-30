@@ -28,7 +28,7 @@ namespace BrainDotExe.Draw
         {
             BlinkDetectorMenu = Program.Menu.AddSubMenu("Blink Detector ", "blinkDetectorDraw");
             BlinkDetectorMenu.AddGroupLabel("Blink Detector");
-            BlinkDetectorMenu.Add("drawEnd", new CheckBox("Show where he was", true));
+            BlinkDetectorMenu.Add("drawEnd", new CheckBox("Show where he was", false));
             BlinkDetectorMenu.Add("drawSeconds", new Slider("Show Position for seconds ", 5, 1, 20));
 
             Drawing.OnDraw += BlinkDetector_OnDraw;
