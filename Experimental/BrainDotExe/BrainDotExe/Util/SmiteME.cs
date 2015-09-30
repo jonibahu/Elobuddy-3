@@ -89,7 +89,7 @@ namespace BrainDotExe.Util
 
         private static void OnDraw(EventArgs args)
         {
-            if (SmiteDamage() != 0 && smiteSlot != SpellSlot.Unknown && Misc.isChecked(Smiterino, "drawHp"))
+            if (SmiteDamage() != 0 && smiteSlot != SpellSlot.Unknown && Misc.isChecked(Smiterino, "drawHp") && smite.IsReady())
             {
                 var minions = ObjectManager.Get<Obj_AI_Minion>().Where(
                     m => m.Team == GameObjectTeam.Neutral && m.IsValidTarget() &&
