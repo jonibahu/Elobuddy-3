@@ -95,6 +95,8 @@ namespace Mech_Viktor.Plugin
             R = new Spell.Skillshot(SpellSlot.R, 700, SkillShotType.Circular, 250, int.MaxValue, 450);
             R.AllowedCollisionCount = int.MaxValue;
             InitMenu();
+
+            TargetSelector2.init();
         }
 
         public static void InitMenu()
@@ -217,7 +219,7 @@ namespace Mech_Viktor.Plugin
 
         public static void OnCombo()
         {
-            _target = TargetSelector.GetTarget(1225f, DamageType.Magical);
+            _target = TargetSelector2.GetTarget(1225f, DamageType.Magical);
             if (_target == null || !_target.IsValid)
                 return;
             
