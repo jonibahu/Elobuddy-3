@@ -26,11 +26,11 @@ namespace BrainDotExe.Draw
         {
             TowerUtilMenu = Program.Menu.AddSubMenu("Tower Util ", "towerUtilDraw");
             TowerUtilMenu.AddGroupLabel("Tower Ranges");
-            TowerUtilMenu.Add("drawRanges", new CheckBox("Draw Ranges", true));
+            TowerUtilMenu.Add("drawRanges", new CheckBox("Draw Ranges", false));
             TowerUtilMenu.AddGroupLabel("Tower Life");
-            TowerUtilMenu.Add("drawTurretLife", new CheckBox("Draw Turrets Life", true));
-            TowerUtilMenu.Add("drawLifeEnemy", new CheckBox("Draw Enemy Life", true));
-            TowerUtilMenu.Add("drawLifeAlly", new CheckBox("Draw Ally Life", true));
+            TowerUtilMenu.Add("drawTurretLife", new CheckBox("Draw Turrets Life", false));
+            TowerUtilMenu.Add("drawLifeEnemy", new CheckBox("Draw Enemy Life", false));
+            TowerUtilMenu.Add("drawLifeAlly", new CheckBox("Draw Ally Life", false));
 
             Drawing.OnDraw += TowerUtil_OnDraw;
             Drawing.OnEndScene += TowerUtil_OnEndScene;

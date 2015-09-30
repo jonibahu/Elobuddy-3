@@ -34,9 +34,9 @@ namespace BrainDotExe
             CloneRevelaer.Init();
             Pink.Init();
             TowerUtil.Init();
-
-            //SafeJungle.Init(); Precisa Testar
-            //BlinkDetector.Init(); Precisa Testar
+            SmiteME.Init();
+            SafeJungle.Init();
+            BlinkDetector.Init();
 
         }
 
@@ -51,7 +51,7 @@ namespace BrainDotExe
             get { return ObjectManager.Player; }
         }
 
-        public static String G_version = "1.2.0";
+        public static String G_version = "1.4.0";
         public static String G_charname = _Player.ChampionName;
 
         /*

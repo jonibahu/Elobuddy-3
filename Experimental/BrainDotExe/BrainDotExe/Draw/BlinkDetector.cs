@@ -8,6 +8,7 @@ using SharpDX;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BrainDotExe.Common;
 using Color = System.Drawing.Color;
 
 namespace BrainDotExe.Draw
@@ -27,7 +28,7 @@ namespace BrainDotExe.Draw
         {
             BlinkDetectorMenu = Program.Menu.AddSubMenu("Blink Detector ", "blinkDetectorDraw");
             BlinkDetectorMenu.AddGroupLabel("Blink Detector");
-            BlinkDetectorMenu.Add("drawEnd", new CheckBox("Show where he was", true));
+            BlinkDetectorMenu.Add("drawEnd", new CheckBox("Show where he was", false));
             BlinkDetectorMenu.Add("drawSeconds", new Slider("Show Position for seconds ", 5, 1, 20));
 
             Drawing.OnDraw += BlinkDetector_OnDraw;
@@ -46,8 +47,7 @@ namespace BrainDotExe.Draw
                     var diffTime = time.Item1 - Game.Time;
                     if (diffTime > 0)
                     {
-                        new Circle() { Color = Color.White, Radius = 100f, BorderWidth = 2f }.Draw(time.Item2);
-                        Misc.DrawLine(_Player.Position, time.Item2, Color.Yellow);
+                        new Circle() { Color = Color.Yellow, Radius = 100f, BorderWidth = 2f }.Draw(time.Item2);
                     }
                     else
                     {
@@ -64,14 +64,12 @@ namespace BrainDotExe.Draw
 
         private static void OnProcessSpellCast(Obj_AI_Base caster, GameObjectProcessSpellCastEventArgs args)
         {
-            if (caster.IsDead || !caster.IsEnemy) return;
+            if (!caster.IsChampion()) return;
 
-            switch (args.SData.Name)
+            if (args.SData.Name == "EzrealArcaneShift" || args.SData.Name == "summonerflash")
             {
-                case "flash":
-                    var timer = new Tuple<float, Vector3>(Game.Time + Misc.getSliderValue(BlinkDetectorMenu, "drawSeconds"), args.End);
-                    times.Add(timer);
-                    break;
+                var timer = new Tuple<float, Vector3>(Game.Time + Misc.getSliderValue(BlinkDetectorMenu, "drawSeconds"), args.End);
+                times.Add(timer);
             }
 
         }

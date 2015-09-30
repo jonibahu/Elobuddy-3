@@ -21,7 +21,7 @@ namespace BrainDotExe.Draw
 
         public static void Init()
         {
-            SafeJungleMenu = Program.Menu.AddSubMenu("Safe Jungle ", "attackRangeDraw");
+            SafeJungleMenu = Program.Menu.AddSubMenu("Safe Jungle ", "safeJungleDraw");
             SafeJungleMenu.AddGroupLabel("Safe Jungle");
             SafeJungleMenu.Add("drawSpots", new KeyBind("Draw Jungle Spots", false, KeyBind.BindTypes.PressToggle, 'K'));
 
@@ -32,7 +32,7 @@ namespace BrainDotExe.Draw
         {
             if (Misc.isChecked(Program.DrawMenu, "drawDisable")) return;
 
-            if (Misc.isChecked(SafeJungleMenu, "drawSpots"))
+            if (SafeJungleMenu["drawSpots"].Cast<KeyBind>().CurrentValue)
             {
                 DrawJunglePosition();
             }
