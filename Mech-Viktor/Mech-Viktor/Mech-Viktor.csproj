@@ -56,7 +56,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Misc\Misc.cs" />
+    <Compile Include="Util\AdvancedTargetSelector.cs" />
+    <Compile Include="Util\AdvTargetSelectorMode.cs" />
+    <Compile Include="Util\Misc.cs" />
     <Compile Include="Plugin\Viktor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

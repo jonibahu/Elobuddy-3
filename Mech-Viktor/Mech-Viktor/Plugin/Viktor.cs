@@ -5,7 +5,6 @@ using EloBuddy.SDK.Enumerations;
 using EloBuddy.SDK.Events;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
-
 using Color = System.Drawing.Color;
 using Mech_Viktor.Util;
 using System.Linq;
@@ -55,7 +54,7 @@ namespace Mech_Viktor.Plugin
             DrawMenu;
 
         /*
-         Misc
+         Util.Misc
          */
 
         public static AIHeroClient _target;
@@ -144,19 +143,19 @@ namespace Mech_Viktor.Plugin
 
         public static void OnDraw(EventArgs args)
         {
-            if (Misc.isChecked(DrawMenu, "drawDisable"))
+            if (Util.Misc.isChecked(DrawMenu, "drawDisable"))
                 return;
 
-            if(Misc.isChecked(DrawMenu, "drawQ"))
+            if(Util.Misc.isChecked(DrawMenu, "drawQ"))
                 new Circle() { Color = Color.Cyan, Radius = Q.Range, BorderWidth = 2f }.Draw(_Player.Position);
 
-            if (Misc.isChecked(DrawMenu, "drawW"))
+            if (Util.Misc.isChecked(DrawMenu, "drawW"))
                 new Circle() { Color = Color.Cyan, Radius = W.Range, BorderWidth = 2f }.Draw(_Player.Position);
 
-            if (Misc.isChecked(DrawMenu, "drawE"))
+            if (Util.Misc.isChecked(DrawMenu, "drawE"))
                 new Circle() { Color = Color.Cyan, Radius = E.Range, BorderWidth = 2f }.Draw(_Player.Position);
 
-            if (Misc.isChecked(DrawMenu, "drawR"))
+            if (Util.Misc.isChecked(DrawMenu, "drawR"))
                 new Circle() { Color = Color.Cyan, Radius = R.Range, BorderWidth = 2f }.Draw(_Player.Position);
         }
 
@@ -186,14 +185,17 @@ namespace Mech_Viktor.Plugin
 
         public static void OnLaneClear()
         {
-            if (Misc.isChecked(LaneClearMenu, "laneClearE") && E.IsReady())
+            if (Util.Misc.isChecked(LaneClearMenu, "laneClearE") && E.IsReady())
             {
                 var firstMinion = ObjectManager.Get<Obj_AI_Minion>().Where(a => a.IsEnemy).Where(a => !a.IsDead).Where(a => a.Distance(_Player) < maxRangeE).FirstOrDefault();
                 var lasttMinion = ObjectManager.Get<Obj_AI_Minion>().Where(a => a.IsEnemy).Where(a => !a.IsDead).Where(a => a.Distance(_Player) < E.Range).LastOrDefault();
+
+                if(firstMinion == null || lasttMinion == null) return;
+
                 CastE(firstMinion.Position, lasttMinion.Position);
             }
 
-            if (Misc.isChecked(LaneClearMenu, "laneClearQ") && Q.IsReady())
+            if (Util.Misc.isChecked(LaneClearMenu, "laneClearQ") && Q.IsReady())
             {
                 var minions = ObjectManager.Get<Obj_AI_Minion>()
                     .Where(a => a.IsEnemy)
@@ -219,7 +221,7 @@ namespace Mech_Viktor.Plugin
             if (_target == null || !_target.IsValid)
                 return;
             
-            if (Misc.isChecked(ComboMenu, "comboR") && R.IsReady())
+            if (Util.Misc.isChecked(ComboMenu, "comboR") && R.IsReady())
             {
                 /*
                 OverKill protection
@@ -232,17 +234,17 @@ namespace Mech_Viktor.Plugin
 
             }
 
-            if (Misc.isChecked(ComboMenu, "comboW") && W.IsReady() && _Player.Distance(_target) < W.Range - 100)
+            if (Util.Misc.isChecked(ComboMenu, "comboW") && W.IsReady() && _Player.Distance(_target) < W.Range - 100)
             {
                 Player.CastSpell(SpellSlot.W, _Player.Position.Extend(_target, W.Range - 100).To3D());
             }
 
-            if (Misc.isChecked(ComboMenu, "comboQ") && Q.IsReady() && Q.IsInRange(_target))
+            if (Util.Misc.isChecked(ComboMenu, "comboQ") && Q.IsReady() && Q.IsInRange(_target))
             {
                 Q.Cast(_target);
             }
 
-            if (Misc.isChecked(ComboMenu, "comboE") && E.IsReady())
+            if (Util.Misc.isChecked(ComboMenu, "comboE") && E.IsReady())
             {
                 PredictCastE(_target);
             }
@@ -250,6 +252,8 @@ namespace Mech_Viktor.Plugin
 
         private static void PredictCastE(AIHeroClient target)
         {
+            if(target.Distance(_Player)> maxRangeE) return;
+
             var posInicial = target.Position;
             if (E.IsInRange(target))
             {
@@ -269,7 +273,7 @@ namespace Mech_Viktor.Plugin
                 var pred = new PredictionResult(maxPosition.To3D(), target.Position, 70, null, Int32.MaxValue);
                 
                 if(pred.HitChance >= HitChance.Medium)
-                    CastE(target.Position, maxPosition.Shorten(_Player.Position.To2D(), 70).To3D());
+                    CastE(target.Position, maxPosition.Extend(_Player.Position.To2D(), 30).To3D());
 
             }
         }
@@ -281,7 +285,7 @@ namespace Mech_Viktor.Plugin
 
         public static void KS()
         {
-            if (Misc.isChecked(KSMenu, "ksQ") && Q.IsReady())
+            if (Util.Misc.isChecked(KSMenu, "ksQ") && Q.IsReady())
             {
                 var target = ObjectManager.Get<AIHeroClient>()
                     .Where(a => !a.IsDead)
@@ -291,9 +295,11 @@ namespace Mech_Viktor.Plugin
                     .Where(a => DmgLib.Q(a) > a.Health + 50)
                     .FirstOrDefault();
 
+                if(target == null ) return;
+
                 Q.Cast(target);
             }
-            if (Misc.isChecked(KSMenu, "ksE") && E.IsReady())
+            if (Util.Misc.isChecked(KSMenu, "ksE") && E.IsReady())
             {
                 var target = ObjectManager.Get<AIHeroClient>()
                     .Where(a => !a.IsDead)
@@ -303,10 +309,12 @@ namespace Mech_Viktor.Plugin
                     .Where(a => DmgLib.E(a) > a.Health + 50)
                     .FirstOrDefault();
 
+                if (target == null) return;
+
                 PredictCastE(target);
             }
 
-            if (Misc.isChecked(KSMenu, "ksR") && R.IsReady())
+            if (Util.Misc.isChecked(KSMenu, "ksR") && R.IsReady())
             {
                 var target = ObjectManager.Get<AIHeroClient>()
                     .Where(a => !a.IsDead)
@@ -315,6 +323,8 @@ namespace Mech_Viktor.Plugin
                     .Where(a => a.Distance(_Player) < R.Range)
                     .Where(a => DmgLib.R(a) > a.Health + 50)
                     .FirstOrDefault();
+
+                if (target == null) return;
 
                 R.Cast(target);
             }
