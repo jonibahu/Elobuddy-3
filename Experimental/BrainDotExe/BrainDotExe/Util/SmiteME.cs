@@ -67,7 +67,7 @@ namespace BrainDotExe.Util
 
         private static double SmiteDamage()
         {
-            if(smite == null) return;
+            if(smite == null) return 0d;
             var damage = new[]
             {
                 20*_Player.Level + 370, 30*_Player.Level + 330, 40*+_Player.Level + 240,
