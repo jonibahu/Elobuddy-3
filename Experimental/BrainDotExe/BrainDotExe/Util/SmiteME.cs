@@ -43,12 +43,12 @@ namespace BrainDotExe.Util
                 "s5_summonersmiteplayerganker", "itemsmiteaoe", "s5_summonersmitequick",
                 "s5_summonersmiteduel", "summonersmite"
             };
-            if (smiteNames.Contains(slot1.Name))
+            if (smiteNames.Contains("smite"))
             {
                 smite = new Spell.Targeted(SpellSlot.Summoner1, (uint) 560f);
                 smiteSlot = SpellSlot.Summoner1;
             }
-            if (smiteNames.Contains(slot2.Name))
+            if (smiteNames.Contains("smite"))
             {
                 smite = new Spell.Targeted(SpellSlot.Summoner2, (uint) 560f);
                 smiteSlot = SpellSlot.Summoner2;
@@ -67,6 +67,7 @@ namespace BrainDotExe.Util
 
         private static double SmiteDamage()
         {
+            if(smite == null) return;
             var damage = new[]
             {
                 20*_Player.Level + 370, 30*_Player.Level + 330, 40*+_Player.Level + 240,
