@@ -43,12 +43,12 @@ namespace BrainDotExe.Util
                 "s5_summonersmiteplayerganker", "itemsmiteaoe", "s5_summonersmitequick",
                 "s5_summonersmiteduel", "summonersmite"
             };
-            if (smiteNames.Contains(slot1.Name))
+            if (smiteNames.Contains("smite"))
             {
                 smite = new Spell.Targeted(SpellSlot.Summoner1, (uint) 560f);
                 smiteSlot = SpellSlot.Summoner1;
             }
-            if (smiteNames.Contains(slot2.Name))
+            if (smiteNames.Contains("smite"))
             {
                 smite = new Spell.Targeted(SpellSlot.Summoner2, (uint) 560f);
                 smiteSlot = SpellSlot.Summoner2;
@@ -67,6 +67,7 @@ namespace BrainDotExe.Util
 
         private static double SmiteDamage()
         {
+            if(smite == null) return 0d;
             var damage = new[]
             {
                 20*_Player.Level + 370, 30*_Player.Level + 330, 40*+_Player.Level + 240,
@@ -89,7 +90,7 @@ namespace BrainDotExe.Util
 
         private static void OnDraw(EventArgs args)
         {
-            if (SmiteDamage() != 0 && smiteSlot != SpellSlot.Unknown && Misc.isChecked(Smiterino, "drawHp"))
+            if (SmiteDamage() != 0 && smiteSlot != SpellSlot.Unknown && Misc.isChecked(Smiterino, "drawHp") && smite.IsReady())
             {
                 var minions = ObjectManager.Get<Obj_AI_Minion>().Where(
                     m => m.Team == GameObjectTeam.Neutral && m.IsValidTarget() &&
