@@ -82,7 +82,7 @@ namespace MAC_Vayne.Plugin
         public static void InitVariables()
         {
             Q = new Spell.Skillshot(SpellSlot.Q, 325, SkillShotType.Linear);
-            E = new Spell.Targeted(SpellSlot.E, (uint)_Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange);
+            E = new Spell.Targeted(SpellSlot.E, 550);
             R = new Spell.Active(SpellSlot.R);
             InitMenu();
         }
@@ -171,7 +171,7 @@ namespace MAC_Vayne.Plugin
 
             if (Misc.isChecked(DrawMenu, "drawCondemnPos") && E.IsReady())
             {
-                foreach (var enemy in ObjectManager.Get<AIHeroClient>().Where(a => a.IsEnemy).Where(a => !a.IsDead).Where(a => E.IsInRange(a)))
+                foreach (var enemy in ObjectManager.Get<AIHeroClient>().Where(a => a.IsEnemy).Where(a => !a.IsDead).Where(a => _Player.Distance(a) <= E.Range))
                 {
                     if (Misc.isChecked(CondemnMenu, "dnCondemn" + enemy.ChampionName.ToLower()))
                         return;
