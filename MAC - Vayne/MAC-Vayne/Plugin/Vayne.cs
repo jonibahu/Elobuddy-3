@@ -24,7 +24,7 @@ namespace MAC_Vayne.Plugin
          Config
          */
 
-        public static String G_version = "1.1.6";
+        public static String G_version = "1.2.1";
         public static String G_charname = _Player.ChampionName;
 
         /*
@@ -71,6 +71,7 @@ namespace MAC_Vayne.Plugin
             Orbwalker.OnPostAttack += OnAfterAttack;
             Orbwalker.OnPreAttack += OnBeforeAttack;
             Gapcloser.OnGapcloser += OnGapCloser;
+            Interrupter.OnInterruptableSpell += OnPossibleToInterrupt;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpell;
 
             Game.OnUpdate += OnGameUpdate;
@@ -96,6 +97,8 @@ namespace MAC_Vayne.Plugin
             Menu.AddSeparator();
             Menu.AddLabel("By Mr Articuno");
 
+            Selector.Init();
+
             DrawMenu = Menu.AddSubMenu("Draw - " + G_charname, "vaniaDraw");
             DrawMenu.AddGroupLabel("Draw");
             DrawMenu.Add("drawDisable", new CheckBox("Turn off all drawings", false));
@@ -118,8 +121,13 @@ namespace MAC_Vayne.Plugin
             ComboMenu.Add("qsQOutAA", new CheckBox("Q if out of AA range", true));
             ComboMenu.AddGroupLabel("R Settings");
             ComboMenu.Add("rsMinEnemiesForR", new Slider("Min Enemies for cast R: ", 2, 1, 5));
+            ComboMenu.AddGroupLabel("Misc");
+            ComboMenu.Add("forceSilverBolt", new CheckBox("Force Attack 2 Stacked Target", false));
+            ComboMenu.Add("checkKillabeEnemyPassive", new CheckBox("Double Check if enemy is killabe", true));
 
             CondemnMenu = Menu.AddSubMenu("Condemn - " + G_charname, "vaniaCondemn");
+            CondemnMenu.Add("interruptDangerousSpells", new CheckBox("Interrupt Dangerous Spells", true));
+            CondemnMenu.Add("antiGapCloser", new CheckBox("Anti Gap Closer", true));
             CondemnMenu.Add("fastCondemn",
                 new KeyBind("Fast Condemn HotKey", false, KeyBind.BindTypes.PressToggle, 'W'));
             CondemnMenu.AddGroupLabel("Auto Condemn");
@@ -138,8 +146,6 @@ namespace MAC_Vayne.Plugin
             KSMenu.AddGroupLabel("Kill Steal");
             KSMenu.Add("ksQ", new CheckBox("Use Q if killable", false));
             KSMenu.Add("ksE", new CheckBox("Use E if killable", false));
-
-            Selector.Init();
         }
 
         #endregion
@@ -248,12 +254,22 @@ namespace MAC_Vayne.Plugin
 
         public  static void OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
         {
-            //  OnGapClose
+            if (sender == null || sender.IsAlly || !Misc.isChecked(CondemnMenu, "antiGapCloser")) return;
+
+            if ((sender.IsAttackingPlayer || e.End.Distance(_Player) <= 70))
+            {
+                E.Cast(sender);
+            }
         }
 
-        public  static void OnPossibleToInterrupt()
+        public  static void OnPossibleToInterrupt(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs interruptableSpellEventArgs)
         {
-            //  OnPossibleToInterrupt
+            if (sender == null || sender.IsAlly || !Misc.isChecked(CondemnMenu, "interruptDangerousSpells")) return;
+
+            if (interruptableSpellEventArgs.DangerLevel == DangerLevel.High && E.IsInRange(sender))
+            {
+                E.Cast(sender);
+            }
         }
 
         public  static void OnLasthit()
@@ -263,7 +279,7 @@ namespace MAC_Vayne.Plugin
 
         public  static void OnLaneClear()
         {
-            //  OnLaneClear
+            
         }
 
         public  static void OnHarass()
@@ -275,6 +291,50 @@ namespace MAC_Vayne.Plugin
         {
             if (_target == null || !_target.IsValid)
                 return;
+
+            if (Misc.isChecked(ComboMenu, "forceSilverBolt"))
+            {
+                foreach (var enemy in ObjectManager.Get<AIHeroClient>().Where(t => t.IsEnemy).Where(t => _Player.GetAutoAttackRange() >= t.Distance(_Player)).Where(t => t.IsValidTarget()))
+                {
+                    if (enemy.PossibleDamage() >= enemy.Health)
+                    {
+                        _target = enemy;
+                        Orbwalker.ForcedTarget = enemy;
+                        break;
+                    }
+                    else
+                    {
+                        if (enemy.Has2WStacks())
+                        {
+                            _target = enemy;
+                            Orbwalker.ForcedTarget = enemy;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (Misc.isChecked(ComboMenu, "forceSilverBolt"))
+            {
+                foreach (var enemy in ObjectManager.Get<AIHeroClient>().Where(t => t.IsEnemy).Where(t => _Player.GetAutoAttackRange() >= t.Distance(_Player)).Where(t => t.IsValidTarget()))
+                {
+                    if (enemy.PossibleDamage() >= enemy.Health)
+                    {
+                        _target = enemy;
+                        Orbwalker.ForcedTarget = enemy;
+                        break;
+                    }
+                    else
+                    {
+                        if (enemy.Has2WStacks())
+                        {
+                            _target = enemy;
+                            Orbwalker.ForcedTarget = enemy;
+                            break;
+                        }
+                    }
+                }
+            }
 
             if (Misc.isChecked(ComboMenu, "comboR") && R.IsReady())
             {
@@ -293,7 +353,6 @@ namespace MAC_Vayne.Plugin
                     }
                     else
                     {
-                        
                         Player.CastSpell(SpellSlot.Q, Game.CursorPos);
                     }
                 }
@@ -318,7 +377,6 @@ namespace MAC_Vayne.Plugin
 
                     if (!Misc.IsCondenavel(priorityTarget))
                         return;
-
                 }
 
                 if (priorityTarget != null && priorityTarget.IsValid && Misc.IsCondenavel(priorityTarget))
@@ -330,14 +388,11 @@ namespace MAC_Vayne.Plugin
 
         public  static void OnGameUpdate(EventArgs args)
         {
-            _target = Selector.GetTarget(1100, DamageType.Physical);
             switch (Orbwalker.ActiveModesFlags)
             {
                 case Orbwalker.ActiveModes.Combo:
+                    _target = Selector.GetTarget(1100, DamageType.Physical);
                     OnCombo();
-                    break;
-                case Orbwalker.ActiveModes.LaneClear:
-                    OnLaneClear();
                     break;
                 case Orbwalker.ActiveModes.LastHit:
                     OnLasthit();

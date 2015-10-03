@@ -36,6 +36,21 @@ namespace MAC_Vayne.Util
             return target.Buffs.Any(bu => bu.Name == "vaynesilvereddebuff");
         }
 
+        public static double PossibleDamage(this AIHeroClient target)
+        {
+            var damage = 0d;
+            var targetMaxHealth = target.MaxHealth;
+
+            var silverBoltDmg = (new float[] {0, 20, 30, 40, 50, 60}[Player.Instance.Spellbook.GetSpell(SpellSlot.W).Level] + new float[] { 0, targetMaxHealth / 4, targetMaxHealth / 5, targetMaxHealth / 6, targetMaxHealth / 7, targetMaxHealth / 8 }[Player.Instance.Spellbook.GetSpell(SpellSlot.W).Level]);
+
+            if (Orbwalker.CanAutoAttack) damage += _Player.GetAutoAttackDamage(target, true);
+
+            if (target.Has2WStacks()) damage += silverBoltDmg;
+
+            return damage;
+        }
+
+
         public static bool IsCondenavel(AIHeroClient target)
         {
             if (isChecked(Vayne.CondemnMenu, "dnCondemn" + target.ChampionName.ToLower()))
