@@ -44,11 +44,11 @@ namespace MAC_Vayne.Util
             TargetMenu.Add("focusTarget", new CheckBox("Focus Selected Target", true));
 
             TargetMenu.AddGroupLabel("Target Selector");
+            TargetMenu.Add("selectedMode", new Slider("Active Mode", (int)EnumSelectorMode.AutoPriority, (int)EnumSelectorMode.AutoPriority, (int)EnumSelectorMode.LessAttacksToKill));
             foreach (var mode in Enum.GetValues(typeof(EnumSelectorMode)))
             {
                 TargetMenu.AddLabel(mode + " = " + (int)mode);
             }
-            TargetMenu.Add("selectedMode", new Slider("Active Mode", (int)EnumSelectorMode.AutoPriority, (int)EnumSelectorMode.AutoPriority, (int)EnumSelectorMode.LessAttacksToKill));
         }
 
         private static void Drawing_OnDraw(EventArgs args)
@@ -119,7 +119,7 @@ namespace MAC_Vayne.Util
                 var attackDamage = _Player.GetAutoAttackDamage(enemy, true);
                 if (Validtarget(target))
                 {
-                    if (enemy.Health <= attackDamage)
+                    if (enemy.Health <= attackDamage || enemy.Health <= attackDamage * 2)
                     {
                         if (Misc.getSliderValue(TargetMenu, "ts" + target.ChampionName) <
                             Misc.getSliderValue(TargetMenu, "ts" + enemy.ChampionName))
@@ -133,11 +133,7 @@ namespace MAC_Vayne.Util
                     }
                     else
                     {
-                        if (Misc.getSliderValue(TargetMenu, "ts" + target.ChampionName) <
-                            Misc.getSliderValue(TargetMenu, "ts" + enemy.ChampionName))
-                        {
-                            target = enemy;
-                        }
+                        LessAttacksToKill(range);
                     }
                 }
                 else
@@ -271,12 +267,10 @@ namespace MAC_Vayne.Util
             return _Player.GetAutoAttackDamage(target, true) / target.Health;
         }
 
-
         public static bool Validtarget(Obj_AI_Base target)
         {
             return !(target == null || target.IsDead || target.Health <= 0 || !target.IsValidTarget() || target.IsInvulnerable);
         }
-
 
         private static void Game_OnWndProc(WndEventArgs args)
         {
