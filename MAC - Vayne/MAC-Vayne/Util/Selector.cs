@@ -59,12 +59,12 @@ namespace MAC_Vayne.Util
             }
         }
 
-        public static AIHeroClient GetTarget(float range, DamageType type, Vector2 secondaryPos = new Vector2())
+        public static AIHeroClient GetTarget(float range, DamageType type, bool forceOrbwalker = false)
         {
-            return SelectTarget(range, type);
+            return SelectTarget(range, type, forceOrbwalker);
         }
 
-        public static AIHeroClient SelectTarget(float range, DamageType type)
+        public static AIHeroClient SelectTarget(float range, DamageType type, bool forceOrbwalker)
         {
             Mode = (EnumSelectorMode)Misc.getSliderValue(TargetMenu, "selectedMode");
             var target = new AIHeroClient();
@@ -101,7 +101,7 @@ namespace MAC_Vayne.Util
             if (_target != null && Misc.isChecked(TargetMenu, "focusTarget") && _target.Distance(_Player) < range)
                 target = _target;
 
-            if(Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) && _Player.Distance(target) <= _Player.GetAutoAttackRange())
+            if((Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) && _Player.Distance(target) <= _Player.GetAutoAttackRange()) || forceOrbwalker)
                 Orbwalker.ForcedTarget = target;
 
             return target;

@@ -397,7 +397,7 @@ namespace MAC_Vayne.Plugin
             switch (Orbwalker.ActiveModesFlags)
             {
                 case Orbwalker.ActiveModes.Combo:
-                    _target = Selector.GetTarget(1100, DamageType.Physical);
+                    _target = Selector.GetTarget(1100, DamageType.Physical, true);
                     OnCombo();
                     break;
                 case Orbwalker.ActiveModes.LastHit:
