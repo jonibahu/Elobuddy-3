@@ -133,7 +133,10 @@ namespace MAC_Vayne.Util
                     }
                     else
                     {
-                        LessAttacksToKill(range);
+                        if (Misc.getSliderValue(TargetMenu, "ts" + target.ChampionName) < Misc.getSliderValue(TargetMenu, "ts" + enemy.ChampionName))
+                        {
+                            target = enemy;
+                        }
                     }
                 }
                 else
