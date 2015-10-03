@@ -221,7 +221,7 @@ namespace MAC_Vayne.Plugin
 
         }
 
-        public  static void OnBeforeAttack(AttackableUnit target, Orbwalker.PreAttackArgs args)
+        public static void OnBeforeAttack(AttackableUnit target, Orbwalker.PreAttackArgs args)
         {
             if (target != null && (!target.IsValid || target.IsDead))
                 return;
@@ -244,7 +244,7 @@ namespace MAC_Vayne.Plugin
             }
         }
 
-        public  static void OnProcessSpell(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        public static void OnProcessSpell(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (!sender.IsMe) return;
             if (args.SData.Name.ToLower().Contains("vaynetumble"))
@@ -253,7 +253,7 @@ namespace MAC_Vayne.Plugin
             }
         }
 
-        public  static void OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
+        public static void OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
         {
             if (sender == null || sender.IsAlly || !Misc.isChecked(CondemnMenu, "antiGapCloser")) return;
 
@@ -263,7 +263,7 @@ namespace MAC_Vayne.Plugin
             }
         }
 
-        public  static void OnPossibleToInterrupt(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs interruptableSpellEventArgs)
+        public static void OnPossibleToInterrupt(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs interruptableSpellEventArgs)
         {
             if (sender == null || sender.IsAlly || !Misc.isChecked(CondemnMenu, "interruptDangerousSpells")) return;
 
@@ -273,22 +273,22 @@ namespace MAC_Vayne.Plugin
             }
         }
 
-        public  static void OnLasthit()
+        public static void OnLasthit()
         {
             //  OnLasthit
         }
 
-        public  static void OnLaneClear()
+        public static void OnLaneClear()
         {
-            
+
         }
 
-        public  static void OnHarass()
+        public static void OnHarass()
         {
             //  OnHarass
         }
 
-        public  static void OnCombo()
+        public static void OnCombo()
         {
             if (_target == null || !_target.IsValid)
                 return;
@@ -387,11 +387,11 @@ namespace MAC_Vayne.Plugin
             }
         }
 
-        public  static void OnGameUpdate(EventArgs args)
+        public static void OnGameUpdate(EventArgs args)
         {
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear))
             {
-                _target = null;
+                Orbwalker.ForcedTarget = null;
                 OnLaneClear();
             }
 
