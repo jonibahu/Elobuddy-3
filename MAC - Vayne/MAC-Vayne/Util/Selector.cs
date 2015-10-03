@@ -61,11 +61,6 @@ namespace MAC_Vayne.Util
 
         public static AIHeroClient GetTarget(float range, DamageType type, Vector2 secondaryPos = new Vector2())
         {
-            if (Misc.isChecked(TargetMenu, "focusTarget") && Validtarget(_target) && _Player.Distance(_target) <= range)
-            {
-                return _target;
-            }
-
             return SelectTarget(range, type);
         }
 
@@ -102,6 +97,11 @@ namespace MAC_Vayne.Util
             {
                 return TargetSelector.GetTarget(range, type);
             }
+
+            if (_target != null || Misc.isChecked(TargetMenu, "focusTarget"))
+                target = _target;
+
+            Orbwalker.ForcedTarget = target;
 
             return target;
         }
@@ -158,7 +158,7 @@ namespace MAC_Vayne.Util
                     target = enemy;
                 }
 
-                if (target.Distance(_Player) > enemy.Distance(_Player)){}
+                if (target.Distance(_Player) > enemy.Distance(_Player)) { }
                 else
                 {
                     target = enemy;
