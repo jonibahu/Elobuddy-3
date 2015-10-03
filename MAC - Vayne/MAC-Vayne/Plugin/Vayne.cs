@@ -24,7 +24,7 @@ namespace MAC_Vayne.Plugin
          Config
          */
 
-        public static String G_version = "1.1.5";
+        public static String G_version = "1.1.6";
         public static String G_charname = _Player.ChampionName;
 
         /*
@@ -71,12 +71,12 @@ namespace MAC_Vayne.Plugin
             Orbwalker.OnPostAttack += OnAfterAttack;
             Orbwalker.OnPreAttack += OnBeforeAttack;
             Gapcloser.OnGapcloser += OnGapCloser;
-            AIHeroClient.OnProcessSpellCast += OnProcessSpell;
+            Obj_AI_Base.OnProcessSpellCast += OnProcessSpell;
 
             Game.OnUpdate += OnGameUpdate;
             Drawing.OnDraw += OnDraw;
 
-            Chat.Print("Mechanics Auto Carry: Loaded, Version" + G_version + " have a nice game.", Color.Red);
+            Chat.Print("Mechanics Auto Carry: Loaded, Version: " + G_version + " have a nice game.", Color.Red);
         }
 
         public static void InitVariables()
@@ -138,6 +138,8 @@ namespace MAC_Vayne.Plugin
             KSMenu.AddGroupLabel("Kill Steal");
             KSMenu.Add("ksQ", new CheckBox("Use Q if killable", false));
             KSMenu.Add("ksE", new CheckBox("Use E if killable", false));
+
+            Selector.Init();
         }
 
         #endregion
@@ -328,7 +330,7 @@ namespace MAC_Vayne.Plugin
 
         public  static void OnGameUpdate(EventArgs args)
         {
-            _target = TargetSelector.GetTarget(1100, DamageType.Physical);
+            _target = Selector.GetTarget(1100, DamageType.Physical);
             switch (Orbwalker.ActiveModesFlags)
             {
                 case Orbwalker.ActiveModes.Combo:
