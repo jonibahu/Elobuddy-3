@@ -388,6 +388,12 @@ namespace MAC_Vayne.Plugin
 
         public  static void OnGameUpdate(EventArgs args)
         {
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear))
+            {
+                _target = null;
+                OnLaneClear();
+            }
+
             switch (Orbwalker.ActiveModesFlags)
             {
                 case Orbwalker.ActiveModes.Combo:

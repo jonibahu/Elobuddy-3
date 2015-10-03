@@ -98,7 +98,7 @@ namespace MAC_Vayne.Util
                 return TargetSelector.GetTarget(range, type);
             }
 
-            if (_target != null || Misc.isChecked(TargetMenu, "focusTarget"))
+            if (_target != null && Misc.isChecked(TargetMenu, "focusTarget") && _target.Distance(_Player) < range)
                 target = _target;
 
             Orbwalker.ForcedTarget = target;
