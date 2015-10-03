@@ -101,7 +101,7 @@ namespace MAC_Vayne.Util
             if (_target != null && Misc.isChecked(TargetMenu, "focusTarget") && _target.Distance(_Player) < range)
                 target = _target;
 
-            if (Orbwalker.ActiveModesFlags != Orbwalker.ActiveModes.Combo)
+            if (Orbwalker.ActiveModesFlags != Orbwalker.ActiveModes.Combo || target.Distance(_Player) > _Player.GetAutoAttackRange())
             {
 
             }
