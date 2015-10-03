@@ -103,7 +103,8 @@ namespace MAC_Vayne.Util
 
             if (Orbwalker.ActiveModesFlags != Orbwalker.ActiveModes.Combo || target.Distance(_Player) > _Player.GetAutoAttackRange())
             {
-
+                Orbwalker.ForcedTarget = null;
+                target = null;
             }
             else
             {
