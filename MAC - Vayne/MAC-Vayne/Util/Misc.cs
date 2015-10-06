@@ -51,7 +51,7 @@ namespace MAC_Vayne.Util
         }
 
 
-        public static bool IsCondenavel(AIHeroClient target)
+        public static bool IsCondemnable(AIHeroClient target)
         {
             if (isChecked(Vayne.CondemnMenu, "dnCondemn" + target.ChampionName.ToLower()))
             {
@@ -60,10 +60,10 @@ namespace MAC_Vayne.Util
 
             if (target.HasBuffOfType(BuffType.SpellImmunity) || target.HasBuffOfType(BuffType.SpellShield) || _Player.IsDashing()) return false;
 
-            var posicao = Vayne._Player.Position.Extend(target.Position, Vayne._Player.Distance(target) - getSliderValue(Vayne.CondemnMenu, "condenmErrorMargin")).To3D();
+            var position = Vayne._Player.Position.Extend(target.Position, Vayne._Player.Distance(target) - getSliderValue(Vayne.CondemnMenu, "condenmErrorMargin")).To3D();
             for (int i = 0; i < 470 - getSliderValue(Vayne.CondemnMenu, "condenmErrorMargin"); i += 10)
             {
-                var cPos = _Player.Position.Extend(posicao, _Player.Distance(posicao) + i).To3D();
+                var cPos = _Player.Position.Extend(position, _Player.Distance(position) + i).To3D();
                 if (cPos.ToNavMeshCell().CollFlags.HasFlag(CollisionFlags.Wall) || cPos.ToNavMeshCell().CollFlags.HasFlag(CollisionFlags.Building))
                 {
                     return true;

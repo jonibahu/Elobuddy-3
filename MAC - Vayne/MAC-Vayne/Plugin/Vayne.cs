@@ -374,11 +374,11 @@ namespace MAC_Vayne.Plugin
                         }
                     }
 
-                    if (!Misc.IsCondenavel(priorityTarget))
+                    if (!Misc.IsCondemnable(priorityTarget))
                         return;
                 }
 
-                if (priorityTarget != null && priorityTarget.IsValid && Misc.IsCondenavel(priorityTarget))
+                if (priorityTarget != null && priorityTarget.IsValid && Misc.IsCondemnable(priorityTarget))
                 {
                     E.Cast(priorityTarget);
                 }
