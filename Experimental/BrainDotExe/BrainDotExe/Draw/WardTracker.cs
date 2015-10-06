@@ -95,10 +95,15 @@ namespace BrainDotExe.Draw
 
                     if (diffTime > 0 || wardInfo.IsPink)
                     {
+                        var fancytimer = string.Format("{0:0}", diffTime);
                         new Circle() { Color = wardInfo.Color, Radius = 20, BorderWidth = 1f }.Draw(wardInfo.Position);
 
                         if (Misc.isChecked(WardTrackerMenu, "drawWardsTimer") || !wardInfo.IsPink)
-                            Drawing.DrawText(Drawing.WorldToScreen(wardInfo.Position), Color.White, diffTime.ToString(), 50);
+                        {
+
+                            Drawing.DrawText(Drawing.WorldToScreen(wardInfo.Position), Color.White, fancytimer,
+                                50);
+                        }
                     }
                     else
                     {
