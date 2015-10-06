@@ -60,7 +60,6 @@
   <ItemGroup>
     <Compile Include="Common\Render.cs" />
     <Compile Include="Common\Utility.cs" />
-    <Compile Include="Draw\AttackRanges.cs" />
     <Compile Include="Draw\BlinkDetector.cs" />
     <Compile Include="Draw\CloneRevelaer.cs" />
     <Compile Include="Draw\Cooldown.cs" />

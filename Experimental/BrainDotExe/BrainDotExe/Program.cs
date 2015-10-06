@@ -29,7 +29,6 @@ namespace BrainDotExe
 
             JungleTimers.Init();
             Cooldown.Init();
-            AttackRanges.Init();
             CloneRevelaer.Init();
             Pink.Init();
             TowerUtil.Init();
