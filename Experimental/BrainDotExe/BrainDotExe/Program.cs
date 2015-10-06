@@ -27,7 +27,6 @@ namespace BrainDotExe
             DrawMenu.Add("drawDisable", new CheckBox("Turn off all drawings", false));
             DrawMenu.Add("streamMode", new CheckBox("Stream Mode", false));
 
-            LastHit.Init();
             JungleTimers.Init();
             Cooldown.Init();
             AttackRanges.Init();
@@ -35,8 +34,8 @@ namespace BrainDotExe
             Pink.Init();
             TowerUtil.Init();
             SmiteME.Init();
-            SafeJungle.Init();
             BlinkDetector.Init();
+            WardTracker.Init();
 
         }
 

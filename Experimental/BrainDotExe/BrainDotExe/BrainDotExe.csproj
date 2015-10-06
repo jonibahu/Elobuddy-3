@@ -65,9 +65,8 @@
     <Compile Include="Draw\CloneRevelaer.cs" />
     <Compile Include="Draw\Cooldown.cs" />
     <Compile Include="Draw\JungleTimers.cs" />
-    <Compile Include="Draw\LastHit.cs" />
-    <Compile Include="Draw\SafeJungle.cs" />
     <Compile Include="Draw\TowerUtil.cs" />
+    <Compile Include="Draw\WardTracker.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\Pink.cs" />

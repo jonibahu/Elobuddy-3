@@ -86,7 +86,6 @@ namespace BrainDotExe.Draw
 
                 if (campIsDead)
                 {
-                    Console.WriteLine(camp.Name + " esta morto :(");
                     var timer = new Tuple<float, Camp>(Game.Time + camp.RespawnTimer - 5, camp);
                     times.Add(timer);
                 }
