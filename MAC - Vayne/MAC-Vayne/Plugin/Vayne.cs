@@ -22,7 +22,7 @@ namespace MAC_Vayne.Plugin
          Config
          */
 
-        public static string G_version = "1.3.1";
+        public static string G_version = "1.2.1";
         public static string G_charname = _Player.ChampionName;
 
         /*
@@ -95,7 +95,7 @@ namespace MAC_Vayne.Plugin
             Menu.AddSeparator();
             Menu.AddLabel("By Mr Articuno");
 
-            Brain.Common.Selector.Init(Menu);
+            /*Brain.Common.Selector.Init(Menu);*/
 
             DrawMenu = Menu.AddSubMenu("Draw - " + G_charname, "vaniaDraw");
             DrawMenu.AddGroupLabel("Draw");
@@ -120,7 +120,7 @@ namespace MAC_Vayne.Plugin
             ComboMenu.AddGroupLabel("R Settings");
             ComboMenu.Add("rsMinEnemiesForR", new Slider("Min Enemies for cast R: ", 2, 1, 5));
             ComboMenu.AddGroupLabel("Misc");
-            ComboMenu.Add("advTargetSelector", new CheckBox("Use Advanced Target Selector", false));
+            /*ComboMenu.Add("advTargetSelector", new CheckBox("Use Advanced Target Selector", false));*/
             ComboMenu.Add("forceSilverBolt", new CheckBox("Force Attack 2 Stacked Target", false));
             ComboMenu.Add("checkKillabeEnemyPassive", new CheckBox("Double Check if enemy is killabe", true));
 
@@ -396,14 +396,14 @@ namespace MAC_Vayne.Plugin
             switch (Orbwalker.ActiveModesFlags)
             {
                 case Orbwalker.ActiveModes.Combo:
-                    if (Misc.isChecked(ComboMenu, "advTargetSelector"))
+                    /*if (Misc.isChecked(ComboMenu, "advTargetSelector"))
                     {
                         _target = Brain.Common.Selector.GetTarget(1100, DamageType.Physical, true);
                     }
                     else
-                    {
+                    {*/
                         _target = TargetSelector.GetTarget(1100, DamageType.Physical);
-                    }
+                    //}
                     OnCombo();
                     break;
                 case Orbwalker.ActiveModes.LastHit:
