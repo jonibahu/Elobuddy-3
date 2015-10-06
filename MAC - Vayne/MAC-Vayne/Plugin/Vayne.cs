@@ -11,8 +11,6 @@ using MAC_Vayne.Util;
 using SharpDX;
 using Color = System.Drawing.Color;
 
-// ReSharper disable All
-
 namespace MAC_Vayne.Plugin
 {
     static class Vayne
@@ -24,8 +22,8 @@ namespace MAC_Vayne.Plugin
          Config
          */
 
-        public static String G_version = "1.2.1";
-        public static String G_charname = _Player.ChampionName;
+        public static string G_version = "1.3.1";
+        public static string G_charname = _Player.ChampionName;
 
         /*
          Spells
@@ -97,7 +95,7 @@ namespace MAC_Vayne.Plugin
             Menu.AddSeparator();
             Menu.AddLabel("By Mr Articuno");
 
-            Selector.Init();
+            Brain.Common.Selector.Init(Menu);
 
             DrawMenu = Menu.AddSubMenu("Draw - " + G_charname, "vaniaDraw");
             DrawMenu.AddGroupLabel("Draw");
@@ -206,7 +204,7 @@ namespace MAC_Vayne.Plugin
 
             if (orbwalkermode == Orbwalker.ActiveModes.Combo)
             {
-                if (Misc.isChecked(ComboMenu, "comboQ") && Q.IsReady() && !Misc.isChecked(ComboMenu, "qsQUsage"))
+                if (Misc.isChecked(ComboMenu, "comboQ") && Q.IsReady() && !Misc.isChecked(ComboMenu, "qsQUsage") && _Player.Distance(_target.Position) < (_Player.GetAutoAttackRange() + Q.Range))
                 {
                     if (Misc.isChecked(ComboMenu, "qsQDirection"))
                     {
@@ -230,7 +228,7 @@ namespace MAC_Vayne.Plugin
 
             if (orbwalkermode == Orbwalker.ActiveModes.Combo)
             {
-                if (Misc.isChecked(ComboMenu, "comboQ") && Q.IsReady() && Misc.isChecked(ComboMenu, "qsQUsage"))
+                if (Misc.isChecked(ComboMenu, "comboQ") && Q.IsReady() && Misc.isChecked(ComboMenu, "qsQUsage") && _Player.Distance(_target.Position) < (_Player.GetAutoAttackRange() + Q.Range))
                 {
                     if (Misc.isChecked(ComboMenu, "qsQDirection"))
                     {
@@ -346,7 +344,7 @@ namespace MAC_Vayne.Plugin
             }
             if (Misc.isChecked(ComboMenu, "comboQ") && Q.IsReady())
             {
-                if (Misc.isChecked(ComboMenu, "qsQOutAA") && _Player.Distance(_target.Position) > _Player.GetAutoAttackRange() && _Player.Distance(_target.Position) < (_Player.GetAutoAttackRange() + Q.Range + 50))
+                if (Misc.isChecked(ComboMenu, "qsQOutAA") && _Player.Distance(_target.Position) < (_Player.GetAutoAttackRange() + Q.Range))
                 {
                     if (Misc.isChecked(ComboMenu, "qsQDirection"))
                     {
@@ -400,7 +398,7 @@ namespace MAC_Vayne.Plugin
                 case Orbwalker.ActiveModes.Combo:
                     if (Misc.isChecked(ComboMenu, "advTargetSelector"))
                     {
-                        _target = Selector.GetTarget(1100, DamageType.Physical, true);
+                        _target = Brain.Common.Selector.GetTarget(1100, DamageType.Physical, true);
                     }
                     else
                     {
@@ -409,9 +407,11 @@ namespace MAC_Vayne.Plugin
                     OnCombo();
                     break;
                 case Orbwalker.ActiveModes.LastHit:
+                    Orbwalker.ForcedTarget = null;
                     OnLasthit();
                     break;
                 case Orbwalker.ActiveModes.Harass:
+                    Orbwalker.ForcedTarget = null;
                     OnHarass();
                     break;
             }
