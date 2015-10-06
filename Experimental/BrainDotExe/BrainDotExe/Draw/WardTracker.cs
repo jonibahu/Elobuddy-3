@@ -38,13 +38,12 @@ namespace BrainDotExe.Draw
 
         private static void GameObjectOnDelete(GameObject sender, EventArgs args)
         {
-            if (!(sender is Obj_AI_Minion)) return;
+            if (!(sender is Obj_AI_Minion) || !sender.Name.Contains("Ward")) return;
 
             var ward = (Obj_AI_Minion)sender;
 
             if (ward.IsAlly) return;
 
-            if (!sender.Name.Contains("Ward")) return;
             var wardInfo = wards.Where(w => w.Available).FirstOrDefault(w => w.Position == ward.Position);
             if (wardInfo != null)
                 wardInfo.Available = false;
@@ -52,30 +51,29 @@ namespace BrainDotExe.Draw
 
         private static void GameObjectOnCreate(GameObject sender, EventArgs args)
         {
-            if (!(sender is Obj_AI_Minion)) return;
+            if (!(sender is Obj_AI_Minion) || !sender.Name.Contains("Ward")) return;
 
             var ward = (Obj_AI_Minion)sender;
             if (ward.IsAlly) return;
 
-            if (sender.Name.Contains("Ward"))
+            switch (ward.BaseSkinName)
             {
-                switch (ward.BaseSkinName)
-                {
-                    case "YellowTrinket":
-                        wards.Add(new WardInfo(ward.Name, false, true, Game.Time + 60, ward.Position, Color.Green));
-                        break;
-                    case "YellowTrinketUpgrade":
-                        wards.Add(new WardInfo(ward.Name, false, true, Game.Time + 120, ward.Position, Color.Green));
-                        break;
-                    case "VisionWard":
-                        wards.Add(new WardInfo(ward.Name, true, true, 0, ward.Position, Color.DeepPink));
-                        break;
-                    case "SightWard":
-                        wards.Add(new WardInfo(ward.Name, false, true, Game.Time + 180, ward.Position, Color.Green));
-                        break;
+                case "YellowTrinket":
+                    wards.Add(new WardInfo(ward.Name, false, true, Game.Time + 60, ward.Position, Color.Green));
+                    break;
+                case "YellowTrinketUpgrade":
+                    wards.Add(new WardInfo(ward.Name, false, true, Game.Time + 120, ward.Position, Color.Green));
+                    break;
+                case "VisionWard":
+                    wards.Add(new WardInfo(ward.Name, true, true, 0, ward.Position, Color.DeepPink));
+                    break;
+                case "SightWard":
+                    wards.Add(new WardInfo(ward.Name, false, true, Game.Time + 180, ward.Position, Color.Green));
+                    break;
 
-                }
             }
+
+
         }
 
         public static void WardTracker_OnDraw(EventArgs args)
