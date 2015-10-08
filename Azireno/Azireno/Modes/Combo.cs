@@ -10,15 +10,17 @@ namespace Azireno.Modes
         {
             if (_target == null || !_target.IsValid) return;
 
+            var finisherPos = _Player.Position.Extend(_target, 100);
+
             //Finisher Combo
-            if(DmgLib.possibleDamage(_target) > _target.Health && R.IsReady() && _Player.Distance(_target) < E.Range)
+            if(DmgLib.possibleDamage(_target) > _target.Health && R.IsReady() && finisherPos.Distance(_Player) < E.Range)
             {
                 if (E.IsReady() && Q.IsReady())
                 {
                     if (Azir.AzirSoldiers.Count > 0)
                     {
                         E.Cast();
-                        Core.DelayAction(() => Q.Cast(_target.Position), 75);
+                        Core.DelayAction(() => Q.Cast(finisherPos.To3D()), 75);
                     }
                     else
                     {
@@ -55,7 +57,7 @@ namespace Azireno.Modes
                     Q.Cast(_target.Position);
                 }
 
-                if(Azir.AzirSoldiers.Count <= 2 && W.IsReady() && _Player.Distance(_target) < W.Range + 300)
+                if(soldiersInRange <= 1 && Azir.AzirSoldiers.Count <= 2 && W.IsReady() && _Player.Distance(_target) < W.Range + 300)
                 {
                     W.Cast(_target.Position);
                 }
