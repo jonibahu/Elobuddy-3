@@ -13,11 +13,12 @@ namespace Azireno.Plugin
     {
         void Init();
         void InitVariables();
+        void InitMenu();
         void OnCombo();
         void OnLaneClear();
         void OnGameUpdate(EventArgs args);
         void OnDraw(EventArgs args);
-        void OnAfterAutoAttack(AttackableUnit target, EventArgs args);
+        void OnAfterAttack(AttackableUnit target, EventArgs args);
         void OnPossibleToInterrupt(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs interruptableSpellEventArgs);
         void OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e);
         void OnProcessSpell(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args);

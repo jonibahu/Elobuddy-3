@@ -51,7 +51,5 @@ namespace Azireno.Modes
         }
 
         #endregion
-
-
     }
 }
