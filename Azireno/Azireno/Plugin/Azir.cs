@@ -15,55 +15,71 @@ namespace Azireno.Plugin
 {
     class Azir : ModeModel, Champion
     {
-        public void GameObjectOnCreate(GameObject sender, EventArgs args)
-        {
-            throw new NotImplementedException();
-        }
+        static public List<Obj_AI_Minion> AzirSoldiers = new List<Obj_AI_Minion>();
 
-        public void GameObjectOnDelete(GameObject sender, EventArgs args)
-        {
-            throw new NotImplementedException();
-        }
+        static Combo combo = new Combo();
+        static Flee flee = new Flee();
+        static Harass harass = new Harass();
+        static LaneClear laneClear = new LaneClear();
 
-        public void OnAfterAttack(AttackableUnit target, EventArgs args)
-        {
-            throw new NotImplementedException();
-        }
+        public void GameObjectOnCreate(GameObject sender, EventArgs args){}
+
+        public void GameObjectOnDelete(GameObject sender, EventArgs args) { }
+
+        public void OnAfterAttack(AttackableUnit target, EventArgs args) { }
 
         public void OnCombo()
         {
-            throw new NotImplementedException();
-        }
-
-        public void OnDraw(EventArgs args)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnGameUpdate(EventArgs args)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
-        {
-            throw new NotImplementedException();
+            combo.Execute();
         }
 
         public void OnLaneClear()
         {
-            throw new NotImplementedException();
+            laneClear.Execute();
         }
 
-        public void OnPossibleToInterrupt(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs interruptableSpellEventArgs)
+        public void OnHarass()
         {
-            throw new NotImplementedException();
+            harass.Execute();
         }
 
-        public void OnProcessSpell(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        public void OnFlee()
         {
-            throw new NotImplementedException();
+            flee.Execute();
         }
+
+        public void OnDraw(EventArgs args)
+        {
+           
+        }
+
+        public void OnGameUpdate(EventArgs args)
+        {
+            _target = TargetSelector.GetTarget(875, DamageType.Magical);
+            switch (Orbwalker.ActiveModesFlags)
+            {
+                case Orbwalker.ActiveModes.Combo:
+                    OnCombo();
+                    break;
+                case Orbwalker.ActiveModes.Flee:
+                    OnFlee();
+                    break;
+                case Orbwalker.ActiveModes.Harass:
+                    OnHarass();
+                    break;
+            }
+
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear))
+                OnLaneClear();
+
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear)){}
+        }
+
+        public void OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e) { }
+
+        public void OnPossibleToInterrupt(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs interruptableSpellEventArgs) { }
+
+        public void OnProcessSpell(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args) { }
 
         public void Init()
         {
@@ -77,6 +93,24 @@ namespace Azireno.Plugin
 
             Game.OnUpdate += OnGameUpdate;
             Drawing.OnDraw += OnDraw;
+
+            GameObject.OnCreate += delegate (GameObject sender, EventArgs args)
+            {
+                var soldier = sender as Obj_AI_Minion;
+                if (soldier != null && soldier.IsAlly && soldier.Name == "AzirSoldier")
+                {
+                    AzirSoldiers.Add(soldier);
+                }
+            };
+
+            GameObject.OnDelete += delegate (GameObject sender, EventArgs args)
+            {
+                var soldier = sender as Obj_AI_Minion;
+                if (soldier != null && soldier.IsAlly && soldier.Name == "AzirSoldier")
+                {
+                    AzirSoldiers.Remove(soldier);
+                }
+            };
         }
 
         public void InitVariables()

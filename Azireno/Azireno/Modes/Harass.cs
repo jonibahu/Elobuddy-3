@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Azireno.Modes
 {
-    class Flee : ModeModel
+    class Harass : ModeModel
     {
-
         public void Execute()
         {
 

@@ -15,7 +15,9 @@ namespace Azireno.Plugin
         void InitVariables();
         void InitMenu();
         void OnCombo();
+        void OnHarass();
         void OnLaneClear();
+        void OnFlee();
         void OnGameUpdate(EventArgs args);
         void OnDraw(EventArgs args);
         void OnAfterAttack(AttackableUnit target, EventArgs args);

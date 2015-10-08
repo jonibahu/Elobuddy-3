@@ -8,5 +8,9 @@ namespace Azireno.Modes
 {
     class LaneClear
     {
+        public void Execute()
+        {
+
+        }
     }
 }
