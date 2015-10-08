@@ -61,9 +61,7 @@ namespace MAC_Vayne.Plugin
         public static void Init()
         {
             Bootstrap.Init(null);
-
-            Chat.Print("Mechanics Auto Carry: Loading...", Color.BlueViolet);
-
+            
             InitVariables();
 
             Orbwalker.OnPostAttack += OnAfterAttack;
@@ -74,8 +72,6 @@ namespace MAC_Vayne.Plugin
 
             Game.OnUpdate += OnGameUpdate;
             Drawing.OnDraw += OnDraw;
-
-            Chat.Print("Mechanics Auto Carry: Loaded, Version: " + G_version + " have a nice game.", Color.Red);
         }
 
         public static void InitVariables()

@@ -17,8 +17,6 @@ namespace BrainDotExe
 
         private static void Game_OnStart(EventArgs args)
         {
-            Chat.Print("<font color='#fb00ff'>L</font><font color='#d12bff'>o</font><font color='#a755ff'>a</font><font color='#7d80ff'>d</font><font color='#54aaff'>i</font><font color='#2ad5ff'>n</font><font color='#00ffff'>g</font><font color='#00dbdb'> </font><font color='#00b6b6'>B</font><font color='#009292'>r</font><font color='#006d6d'>a</font><font color='#004949'>i</font><font color='#002424'>n</font><font color='#000000'>.</font><font color='#002b00'>e</font><font color='#005500'>x</font><font color='#008000'>e</font><font color='#00aa00'>.</font><font color='#00d500'>.</font><font color='#00ff00'>.</font>");
-
             Menu = MainMenu.AddMenu("Brain.exe", "braindotexe");
             Menu.AddSeparator();
             Menu.AddLabel("By KK2 & MrArticuno");

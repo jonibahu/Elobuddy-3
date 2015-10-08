@@ -72,8 +72,6 @@ namespace Mech_Viktor.Plugin
         {
             Bootstrap.Init(null);
 
-            Chat.Print("Mechanics: Loading...", Color.BlueViolet);
-
             InitVariables();
 
             Gapcloser.OnGapcloser += OnGapCloser;
@@ -81,8 +79,6 @@ namespace Mech_Viktor.Plugin
 
             Game.OnUpdate += OnGameUpdate;
             Drawing.OnDraw += OnDraw;
-
-            Chat.Print("Mechanics Viktor: Loaded, Version" + G_version + " have a nice game.", Color.Red);
         }
 
         public static void InitVariables()
