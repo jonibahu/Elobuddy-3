@@ -1,6 +1,10 @@
-﻿using Azireno.Plugin;
+﻿using System;
+using System.Linq;
+using Azireno.Plugin;
 using Azireno.Util;
 using EloBuddy.SDK;
+using SharpDX;
+
 namespace Azireno.Modes
 {
     class Combo : ModeModel
@@ -8,78 +12,48 @@ namespace Azireno.Modes
 
         public void Execute()
         {
-            if (_target == null || !_target.IsValid) return;
+            if (_target == null || !_target.IsValidTarget()) return;
 
-            var finisherPos = _Player.Position.Extend(_target, 100);
+            var finisherPos = _Player.Position.Extend(_target, _Player.Distance(_target) + 100).To3D();
 
-            //Finisher Combo
-            if(DmgLib.possibleDamage(_target) > _target.Health && R.IsReady() && finisherPos.Distance(_Player) < E.Range)
+            Console.WriteLine("Combo Started");
+
+            if (DmgLib.possibleDamage(_target) > _target.Health && R.IsReady() && _Player.Distance(finisherPos) < 875)
             {
-                if (E.IsReady() && Q.IsReady())
-                {
-                    if (Azir.AzirSoldiers.Count > 0)
-                    {
-                        E.Cast();
-                        Core.DelayAction(() => Q.Cast(finisherPos.To3D()), 75);
-                    }
-                    else
-                    {
-                        W.Cast();
-                        Core.DelayAction(CastEandQ, 250);
-                    }
-                }
-
-                if (_Player.Distance(_target) < 50)
-                {
-                    R.Cast(_target.Position.Extend(_Player, R.Range).To3D());
-                }
-                else if (_Player.Distance(_target) < R.Range - 50 && DmgLib.R(_target) > _target.Health)
-                {
-                    R.Cast(_target.Position);
-                }
-                
-            }
-
-            //Normal DMG
-            if (Azir.AzirSoldiers.Count > 0)
-            {
-                int soldiersInRange = 0;
-                foreach(var soldier in Azir.AzirSoldiers)
-                {
-                    if(soldier.Distance(_target) < 375)
-                    {
-                        soldiersInRange++;
-                    }
-                }
-
-                if(Azir.AzirSoldiers.Count > soldiersInRange && _Player.Distance(_target) < 875 && Q.IsReady())
-                {
-                    Q.Cast(_target.Position);
-                }
-
-                if(soldiersInRange <= 1 && Azir.AzirSoldiers.Count <= 2 && W.IsReady() && _Player.Distance(_target) < W.Range + 300)
-                {
-                    W.Cast(_target.Position);
-                }
+                Console.WriteLine("Finisher");
+                new Brain().CastFly(finisherPos);
             }
             else
             {
-                if (W.IsReady() && _Player.Distance(_target) < W.Range + 375 && !Q.IsReady())
+                Console.WriteLine(Orbwalker.ValidAzirSoldiers.Count);
+                if (Orbwalker.AzirSoldiers.Count > 0)
                 {
-                    W.Cast(_target.Position);
+                    var countInRange = Orbwalker.ValidAzirSoldiers.Count(validAzirSoldier => validAzirSoldier.Distance(_target) < Orbwalker.AzirSoldierAutoAttackRange);
+                    Console.WriteLine(countInRange);
+                    if (countInRange > 0)
+                    {
+                    }
+                    else
+                    {
+                        if (Q.IsReady() && Q.IsInRange(_target)) Q.Cast(_Player.Position.Extend(_target.Position, 100).To3D());
+                        if (!Q.IsReady() && W.IsInRange(_target)) W.Cast(_Player.Position.Extend(_target.Position, 100).To3D());
+                    }
                 }
-                else if(W.IsReady() && (_Player.Distance(_target) > W.Range + 375 && _Player.Distance(_target) < Q.Range + 300) && Q.IsReady())
+                else
                 {
-                    W.Cast(_Player.Position.Extend(_target, W.Range - 100).To3D());
-                    Core.DelayAction(() => Q.Cast(_target.Position), 250);
+                    var pos = _target.Position;
+                    pos = _Player.Distance(_target) > W.Range ? _Player.Position.Shorten(pos, -W.Range) : _Player.Position.Extend(pos, W.Range).To3D();
+                    W.Cast(pos);
                 }
+
             }
+
         }
 
-        public void CastEandQ()
+        public void CastEandQ(Vector3 pos)
         {
-            E.Cast(_target.Position);
-            Core.DelayAction(() => Q.Cast(_target.Position), 75);
+            Q.Cast(pos);
+            Core.DelayAction(() => E.Cast(), 75);
         }
     }
 }

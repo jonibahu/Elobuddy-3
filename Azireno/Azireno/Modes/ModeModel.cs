@@ -24,7 +24,7 @@ namespace Azireno.Modes
          Spells
          */
         public static Spell.Skillshot Q;
-        public static Spell.Active W;
+        public static Spell.Skillshot W;
         public static Spell.Active E;
         public static Spell.Skillshot R;
 

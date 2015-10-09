@@ -10,17 +10,18 @@ using Azireno.Util;
 using System.Drawing;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Enumerations;
+using EloBuddy.SDK.Rendering;
 
 namespace Azireno.Plugin
 {
     class Azir : ModeModel, Champion
     {
-        static public List<Obj_AI_Minion> AzirSoldiers = new List<Obj_AI_Minion>();
-
         static Combo combo = new Combo();
         static Flee flee = new Flee();
         static Harass harass = new Harass();
         static LaneClear laneClear = new LaneClear();
+
+        public static float lastFlee = 0f;
 
         public void GameObjectOnCreate(GameObject sender, EventArgs args){}
 
@@ -45,12 +46,16 @@ namespace Azireno.Plugin
 
         public void OnFlee()
         {
-            flee.Execute();
+            if(E.State == SpellState.Ready || E.State == SpellState.Surpressed)
+                flee.Execute();
         }
 
         public void OnDraw(EventArgs args)
         {
-           
+            if(_target == null || !_target.IsValidTarget()) return;
+            var finisherPos = _Player.Position.Extend(_target, _Player.Distance(_target) + 100).To3D();
+
+            Circle.Draw(SharpDX.Color.Red, 60, finisherPos);
         }
 
         public void OnGameUpdate(EventArgs args)
@@ -73,6 +78,7 @@ namespace Azireno.Plugin
                 OnLaneClear();
 
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear)){}
+
         }
 
         public void OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e) { }
@@ -85,6 +91,8 @@ namespace Azireno.Plugin
         {
             Bootstrap.Init(null);
 
+            Console.WriteLine("Azir injected!");
+
             InitVariables();
             Orbwalker.OnPostAttack += OnAfterAttack;
             Gapcloser.OnGapcloser += OnGapCloser;
@@ -94,31 +102,14 @@ namespace Azireno.Plugin
             Game.OnUpdate += OnGameUpdate;
             Drawing.OnDraw += OnDraw;
 
-            GameObject.OnCreate += delegate (GameObject sender, EventArgs args)
-            {
-                var soldier = sender as Obj_AI_Minion;
-                if (soldier != null && soldier.IsAlly && soldier.Name == "AzirSoldier")
-                {
-                    AzirSoldiers.Add(soldier);
-                }
-            };
-
-            GameObject.OnDelete += delegate (GameObject sender, EventArgs args)
-            {
-                var soldier = sender as Obj_AI_Minion;
-                if (soldier != null && soldier.IsAlly && soldier.Name == "AzirSoldier")
-                {
-                    AzirSoldiers.Remove(soldier);
-                }
-            };
         }
 
         public void InitVariables()
         {
             Q = new Spell.Skillshot(SpellSlot.Q, 875, SkillShotType.Linear);
-            W = new Spell.Active(SpellSlot.W, 450);
+            W = new Spell.Skillshot(SpellSlot.W, 450, SkillShotType.Circular);
             E = new Spell.Active(SpellSlot.E, 1100);
-            R = new Spell.Skillshot(SpellSlot.R, 250, SkillShotType.Linear, 250, 500, 400);
+            R = new Spell.Skillshot(SpellSlot.R, 250, SkillShotType.Linear);
             InitMenu();
 
             if(_Player.Spellbook.GetSpell(SpellSlot.W).Level < 1)
