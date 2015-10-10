@@ -1,11 +1,6 @@
 ﻿using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Azireno.Modes
 {
@@ -24,7 +19,7 @@ namespace Azireno.Modes
          Spells
          */
         public static Spell.Skillshot Q;
-        public static Spell.Active W;
+        public static Spell.Skillshot W;
         public static Spell.Active E;
         public static Spell.Skillshot R;
 
@@ -35,8 +30,8 @@ namespace Azireno.Modes
         public static Menu Menu,
             ComboMenu,
             LaneClearMenu,
-            CondemnMenu,
-            KSMenu,
+            HarassMenu,
+            MiscMenu,
             DrawMenu;
 
         /*
@@ -51,7 +46,5 @@ namespace Azireno.Modes
         }
 
         #endregion
-
-
     }
 }

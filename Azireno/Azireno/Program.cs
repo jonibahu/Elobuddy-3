@@ -1,10 +1,7 @@
-﻿using EloBuddy;
+﻿using System;
+using Azireno.Plugin;
+using EloBuddy;
 using EloBuddy.SDK.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Azireno
 {
@@ -22,7 +19,7 @@ namespace Azireno
             switch (champion)
             {
                 case "azir":
-                    //Vayne.Init();
+                    new Azir().Init();
                     break;
             }
 
