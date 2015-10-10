@@ -99,7 +99,7 @@ namespace Azireno.Plugin
 
         public void OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
         {
-            if (R.IsReady() && (sender.IsAttackingPlayer || _Player.Distance(e.End) < 70) && Orbwalker.ActiveModesFlags == Orbwalker.ActiveModes.Flee)
+            if (R.IsReady() && (sender.IsAttackingPlayer || _Player.Distance(e.End) < 70) && Orbwalker.ActiveModesFlags == Orbwalker.ActiveModes.Flee && Misc.isChecked(MiscMenu, "allowAntiGapCloser"))
             {
                 Player.CastSpell(SpellSlot.R, sender);
             }
@@ -108,7 +108,7 @@ namespace Azireno.Plugin
         public void OnPossibleToInterrupt(Obj_AI_Base sender,
             Interrupter.InterruptableSpellEventArgs interruptableSpellEventArgs)
         {
-            if (R.IsReady() && R.IsInRange(sender) && interruptableSpellEventArgs.DangerLevel == DangerLevel.High)
+            if (R.IsReady() && R.IsInRange(sender) && interruptableSpellEventArgs.DangerLevel == DangerLevel.High && Misc.isChecked(MiscMenu, "allowInterrupt"))
                 R.Cast(sender);
         }
 
@@ -173,6 +173,11 @@ namespace Azireno.Plugin
             HarassMenu = Menu.AddSubMenu("Harass - " + G_charname, "azirHarass");
             HarassMenu.AddGroupLabel("Harass");
             HarassMenu.Add("hsSoldiers", new CheckBox("Auto Pilot Soldiers", true));
+
+            MiscMenu = Menu.AddSubMenu("Misc - " + G_charname, "azirMisc");
+            MiscMenu.AddGroupLabel("Misc");
+            MiscMenu.Add("allowAntiGapCloser", new CheckBox("Ultimante on Anti Gap Closers", true));
+            MiscMenu.Add("allowInterrupt", new CheckBox("Ultimante on Dangerous Spells", true));
         }
     }
 }

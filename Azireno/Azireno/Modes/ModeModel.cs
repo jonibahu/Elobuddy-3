@@ -31,7 +31,7 @@ namespace Azireno.Modes
             ComboMenu,
             LaneClearMenu,
             HarassMenu,
-            CondemnMenu,
+            MiscMenu,
             DrawMenu;
 
         /*
