@@ -1,9 +1,7 @@
-﻿using Azireno.Plugin;
-using Azireno.Util;
+﻿using System;
+using Azireno.Plugin;
 using EloBuddy;
 using EloBuddy.SDK.Events;
-using System;
-using System.Drawing;
 
 namespace Azireno
 {

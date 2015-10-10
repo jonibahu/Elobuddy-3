@@ -1,11 +1,6 @@
 ﻿using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Azireno.Modes
 {
@@ -35,8 +30,8 @@ namespace Azireno.Modes
         public static Menu Menu,
             ComboMenu,
             LaneClearMenu,
+            HarassMenu,
             CondemnMenu,
-            KSMenu,
             DrawMenu;
 
         /*

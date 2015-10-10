@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Azireno.Util;
+using EloBuddy;
+using EloBuddy.SDK;
 
 namespace Azireno.Modes
 {
@@ -10,7 +8,9 @@ namespace Azireno.Modes
     {
         public void Execute()
         {
-
+            if(! Misc.isChecked(HarassMenu, "hsSoldiers")) return;
+            var target = TargetSelector.GetTarget(1100, DamageType.Magical);
+            SoldierController.AutoPilot(Orbwalker.ValidAzirSoldiers, target);
         }
 
     }

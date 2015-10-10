@@ -67,6 +67,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\Brain.cs" />
+    <Compile Include="Util\Helpers\MEC.cs" />
+    <Compile Include="Util\Helpers\VectorHelp.cs" />
     <Compile Include="Util\Misc.cs" />
     <Compile Include="Util\Notification.cs" />
     <Compile Include="Util\SoldierController.cs" />
