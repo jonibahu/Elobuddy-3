@@ -46,7 +46,7 @@ namespace BrainDotExe.Util
             if (!Misc.isChecked(PinkInviMenu, "usePink")) return;
             try
             {
-                if (enemy.Type == GameObjectType.AIHeroClient && enemy.IsEnemy)
+                if (enemy.Type == GameObjectType.obj_AI_Hero && enemy.IsEnemy)
                 {
                     // checka as magias !!!!!!!!!!
                     if (args.SData.Name == "akalismokebomb" ||
@@ -82,7 +82,7 @@ namespace BrainDotExe.Util
         {
             if (!Misc.isChecked(PinkInviMenu, "usePink")) return;
             // Rengar ! _ !
-            var Rengar = HeroManager.Enemies.Find(x => x.ChampionName.ToLower() == "rengar");
+            var Rengar = EntityManager.Heroes.Enemies.Find(x => x.ChampionName.ToLower() == "rengar");
             if (Rengar != null)
             {
                 if (sender.IsEnemy && sender.Name.Contains("Rengar_Base_R_Alert"))
@@ -98,7 +98,7 @@ namespace BrainDotExe.Util
             }
 
             // Le Blanc
-            var LeBlank = HeroManager.Enemies.Find(x => x.ChampionName.ToLower() == "leblanc");
+            var LeBlank = EntityManager.Heroes.Enemies.Find(x => x.ChampionName.ToLower() == "leblanc");
             if (LeBlank != null)
             {
                 if (_Player.Distance(sender.Position) > 600) return;
@@ -120,7 +120,7 @@ namespace BrainDotExe.Util
         {
             if (!Misc.isChecked(PinkInviMenu, "usePink")) return;
             // Vayne
-            var Vayne = HeroManager.Enemies.Find(x => x.ChampionName.ToLower() == "vayne");
+            var Vayne = EntityManager.Heroes.Enemies.Find(x => x.ChampionName.ToLower() == "vayne");
             if (Vayne != null)
             {
                 foreach (var hero in ObjectManager.Get<AIHeroClient>().Where(
