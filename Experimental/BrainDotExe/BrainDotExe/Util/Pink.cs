@@ -46,7 +46,7 @@ namespace BrainDotExe.Util
             if (!Misc.isChecked(PinkInviMenu, "usePink")) return;
             try
             {
-                if (enemy.Type == GameObjectType.obj_AI_Hero && enemy.IsEnemy)
+                if (enemy.Type == GameObjectType.AIHeroClient && enemy.IsEnemy)
                 {
                     // checka as magias !!!!!!!!!!
                     if (args.SData.Name == "akalismokebomb" ||
