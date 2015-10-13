@@ -53,13 +53,28 @@ namespace MAC_Jinx.Util
 
         public void AutoSwitchQFarm()
         {
-            if (Orbwalker.CanAutoAttack) return;
+            /*if (Orbwalker.CanAutoAttack) return;
 
             if (IsCannon() && PassiveCounter() == 0)
             {
                 Q.Cast();
             }
             else if(!IsCannon() && PassiveCounter() == 3)
+            {
+                Q.Cast();
+            }*/
+
+            var minions = EntityManager.MinionsAndMonsters.EnemyMinions;
+
+            if (minions == null || minions.Count == 0) return;
+
+            var killableminions = minions.Count(objAiMinion => objAiMinion.Health < _Player.GetAutoAttackRange(objAiMinion) && objAiMinion.Distance(_Player) < _Player.GetAutoAttackRange());
+
+            if (killableminions > Misc.GetSliderValue(LaneClearMenu, "minMinionsForSwitch") && !IsCannon())
+            {
+                Q.Cast();
+            }
+            else if (IsCannon())
             {
                 Q.Cast();
             }

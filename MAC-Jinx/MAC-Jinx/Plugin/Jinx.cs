@@ -124,6 +124,10 @@ namespace MAC_Jinx.Plugin
                     break;
             }
 
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear))
+                OnLaneClear();
+
+
             if (!Misc.IsChecked(MiscMenu, "allowEImmobile")) return;
 
             foreach (var aiHeroClient in EntityManager.Heroes.Enemies.Where(aiHeroClient => E.IsInRange(aiHeroClient) && !aiHeroClient.CanMove))
