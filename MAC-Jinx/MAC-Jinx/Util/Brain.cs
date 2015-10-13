@@ -7,6 +7,7 @@ using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Enumerations;
 using MAC_Jinx.Mode;
+using MAC_Jinx.Plugin;
 using SharpDX;
 
 namespace MAC_Jinx.Util
@@ -26,8 +27,8 @@ namespace MAC_Jinx.Util
                     var predictionR = R.GetPrediction(aiHeroClient);
                     R.AllowedCollisionCount = int.MaxValue;
 
-                    if (predictionR.HitChancePercent >= 65 && !predictionR.Collision)
-                        Player.CastSpell(SpellSlot.R, aiHeroClient.ServerPosition);
+                    if(!predictionR.Collision)
+                        Player.CastSpell(SpellSlot.R, predictionR.CastPosition);
                 }
             }
         }
@@ -55,6 +56,8 @@ namespace MAC_Jinx.Util
         {
             /*if (Orbwalker.CanAutoAttack) return;
 
+            Console.WriteLine();
+
             if (IsCannon() && PassiveCounter() == 0)
             {
                 Q.Cast();
@@ -63,6 +66,8 @@ namespace MAC_Jinx.Util
             {
                 Q.Cast();
             }*/
+
+            if (Orbwalker.CanAutoAttack) return;
 
             var minions = EntityManager.MinionsAndMonsters.EnemyMinions;
 
@@ -82,27 +87,52 @@ namespace MAC_Jinx.Util
 
         public void AutoSwitchQ(Obj_AI_Base target)
         {
-            if(Orbwalker.CanAutoAttack) return;
-            
-            if (IsCannon())
+            if(Orbwalker.CanAutoAttack || !Orbwalker.GetTarget().IsValidTarget()) return;
+
+            var enemiesNear = Orbwalker.GetTarget().CountEnemiesInRange(AoeRadius);
+
+            if (!IsCannon())
             {
-                if (PassiveCounter() == 0 || _Player.Distance(target) < _Player.GetAutoAttackRange() / 2)
+                if (enemiesNear >= 1)
+                {
+                    Q.Cast();
+                    return;
+                }
+
+                if (_Player.Distance(Orbwalker.GetTarget()) > 525)
                 {
                     Q.Cast();
                 }
             }
             else
             {
-                if (PassiveCounter() > 2 || (_Player.GetAutoAttackRange() < _Player.Distance(target) && _Player.GetAutoAttackRange() + Q.Range < _Player.Distance(target)))
+                if (_Player.Distance(Orbwalker.GetTarget()) < 350)
+                {
+                    Q.Cast();
+                    return;
+                }
+
+                if (enemiesNear > 1)
+                {
+                    return;
+                }
+
+                if (_Player.Distance(Orbwalker.GetTarget()) > 525)
+                {
+                    return;
+                }
+
+                if (PassiveCounter() == 0)
                 {
                     Q.Cast();
                 }
             }
+
         }
 
         public bool IsCannon()
         {
-            return _Player.Buffs.Where(o => o.IsValid()).Select(buff => !buff.DisplayName.Contains("con")).FirstOrDefault();
+             return _Player.AttackRange > 525;
         }
 
         public bool ManaManager(float maximumPercent)
@@ -112,14 +142,15 @@ namespace MAC_Jinx.Util
 
         public int PassiveCounter()
         {
-            if (_Player.HasBuff("JinxQRamp"))
-            {
-                return _Player.Buffs.Select(b => b.Name == "JinxQRamp").Count();
-            }
-
-            return 0;
+           return Jinx.qPassiveCount;
         }
 
+        public static float FishBonesBonus
+        {
+            get { return 75f + 25f * Q.Level; }
+        }
+
+        public const int AoeRadius = 200;
 
     }
 

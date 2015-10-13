@@ -22,6 +22,8 @@ namespace MAC_Jinx.Plugin
         static Harass harass = new Harass();
         static LaneClear laneClear = new LaneClear();
 
+        public static int qPassiveCount = 0;
+
         public void Init()
         {
             Bootstrap.Init(null);
@@ -37,6 +39,15 @@ namespace MAC_Jinx.Plugin
             Game.OnUpdate += OnGameUpdate;
             Obj_AI_Base.OnLevelUp += OnLevelUp;
             Drawing.OnDraw += OnDraw;
+            Obj_AI_Base.OnBuffLose += OnBuffLose;
+        }
+
+        private void OnBuffLose(Obj_AI_Base sender, Obj_AI_BaseBuffLoseEventArgs args)
+        {
+            if (args.Buff.DisplayName.Contains("JinxQRamp"))
+            {
+                qPassiveCount = 0;
+            }
         }
 
         private static void OnLevelUp(Obj_AI_Base sender, Obj_AI_BaseLevelUpEventArgs args)
@@ -111,6 +122,11 @@ namespace MAC_Jinx.Plugin
 
         public void OnGameUpdate(EventArgs args)
         {
+            foreach (var buff in _Player.Buffs.Where(o => o.IsValid()).Where(buff => buff.DisplayName.Contains("JinxQRamp")))
+            {
+                qPassiveCount = buff.Count;
+            }
+
             switch (Orbwalker.ActiveModesFlags)
             {
                 case Orbwalker.ActiveModes.Combo:
