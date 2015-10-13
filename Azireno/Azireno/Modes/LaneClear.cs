@@ -16,7 +16,7 @@ namespace Azireno.Modes
             var minion = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, _Player.Position,
                 W.Range);
 
-            if (minion == null || minion.Count == 0) return;
+            if (minion == null || minion.Count() == 0) return;
 
             var m = minion.FirstOrDefault();
 
