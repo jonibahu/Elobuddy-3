@@ -21,8 +21,6 @@ namespace BrainDotExe.Draw
         public static Menu CooldonMenu;
         private static int X;  // HPBar Screen X Position
         private static int Y;  // HPBar Screen Y Position
-        private static int SpellLevelX; // Coord of X Spell Position
-        private static int SpellLevelY; // Coord of Y Spell Position
         private static int SummonerSpellX; // Coor of X Summoner Spell
         private static int SummonerSpellY; // Coor of Y Summoner Spell
 
