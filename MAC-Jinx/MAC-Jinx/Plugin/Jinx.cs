@@ -58,9 +58,9 @@ namespace MAC_Jinx.Plugin
         public void InitVariables()
         {
             Q = new Spell.Active(SpellSlot.Q, 75);
-            W = new Spell.Skillshot(SpellSlot.W, 1450, SkillShotType.Linear);
-            E = new Spell.Skillshot(SpellSlot.E, 900, SkillShotType.Circular, spellWidth: 50);
-            R = new Spell.Skillshot(SpellSlot.R, int.MaxValue, SkillShotType.Linear);
+            W = new Spell.Skillshot(SpellSlot.W, 1500, SkillShotType.Linear, 600, 3300, 60);
+            E = new Spell.Skillshot(SpellSlot.E, 920, SkillShotType.Circular, 1200, 1750, 100);
+            R = new Spell.Skillshot(SpellSlot.R, int.MaxValue, SkillShotType.Linear, 700, 1500, 140);
             InitMenu();
         }
 

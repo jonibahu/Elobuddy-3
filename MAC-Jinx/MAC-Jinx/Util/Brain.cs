@@ -45,7 +45,7 @@ namespace MAC_Jinx.Util
         public void WCast(Obj_AI_Base target)
         {
             var predictionW = W.GetPrediction(_target);
-            if (W.IsReady() && _Player.GetAutoAttackRange() + Q.Range < _Player.Distance(_target) && predictionW.HitChance >= HitChance.High
+            if (W.IsReady() && _Player.GetAutoAttackRange() < _Player.Distance(_target) && predictionW.HitChancePercent >= 70
                 && !predictionW.Collision)
             {
                 W.Cast(predictionW.CastPosition);
@@ -71,7 +71,7 @@ namespace MAC_Jinx.Util
 
             var minions = EntityManager.MinionsAndMonsters.EnemyMinions;
 
-            if (minions == null || minions.Count == 0) return;
+            if (minions == null || minions.Count() == 0) return;
 
             var killableminions = minions.Count(objAiMinion => objAiMinion.Health < _Player.GetAutoAttackRange(objAiMinion) && objAiMinion.Distance(_Player) < _Player.GetAutoAttackRange());
 
@@ -87,45 +87,32 @@ namespace MAC_Jinx.Util
 
         public void AutoSwitchQ(Obj_AI_Base target)
         {
-            if(Orbwalker.CanAutoAttack || !Orbwalker.GetTarget().IsValidTarget()) return;
+            if(Orbwalker.CanAutoAttack || !Orbwalker.GetTarget().IsValidTarget() || !Q.IsReady()) return;
 
+            var obwTarget = Orbwalker.GetTarget();
             var enemiesNear = Orbwalker.GetTarget().CountEnemiesInRange(AoeRadius);
 
-            if (!IsCannon())
+            if(obwTarget.Distance(_Player) > _Player.GetAutoAttackRange() && !IsCannon())
             {
-                if (enemiesNear >= 1)
-                {
-                    Q.Cast();
-                    return;
-                }
-
-                if (_Player.Distance(Orbwalker.GetTarget()) > 525)
-                {
-                    Q.Cast();
-                }
+                Q.Cast();
+                return;
             }
-            else
+
+            if(obwTarget.Distance(_Player) < 525 && IsCannon() && enemiesNear <= 1)
             {
-                if (_Player.Distance(Orbwalker.GetTarget()) < 350)
-                {
-                    Q.Cast();
-                    return;
-                }
+                Q.Cast();
+                return;
+            }
 
-                if (enemiesNear > 1)
-                {
-                    return;
-                }
+            if(!IsCannon() && enemiesNear >= 2)
+            {
+                Q.Cast();
+                return;
+            }
 
-                if (_Player.Distance(Orbwalker.GetTarget()) > 525)
-                {
-                    return;
-                }
-
-                if (PassiveCounter() == 0)
-                {
-                    Q.Cast();
-                }
+            if(IsCannon() && _Player.CountEnemiesInRange(2000) == 0)
+            {
+                Q.Cast();
             }
 
         }
