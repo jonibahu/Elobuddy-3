@@ -20,8 +20,9 @@ namespace OneForWeek
 
         private static void OnLoadCompleted(EventArgs args)
         {
-            Notification.DrawNotification(new NotificationModel(Game.Time, 5f, 1f, "I'm a toaster by Vector", ""));
-            Notification.DrawNotification(new NotificationModel(Game.Time, 15f, 0.5f, "Elobuddy", ""));
+            Notification.DrawNotification(new NotificationModel(Game.Time, 5f, 1f, "I'm a toaster by Vector"));
+            Notification.DrawNotification(new NotificationModel(Game.Time, 10f, 1f, "Elobuddy"));
+            Notification.DrawNotification(new NotificationModel(Game.Time, 15f, 1f, null));
         }
         
     }

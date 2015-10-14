@@ -8,7 +8,6 @@ namespace OneForWeek.Model
         public float ShowTimer { get; set; }
         public float AnimationTimer { get; set; }
         public string ShowText { get; set; }
-        public string Logo { get; set; }
 
         public NotificationModel(float startTimer, float showTimer, float animationTimer)
         {
@@ -17,13 +16,12 @@ namespace OneForWeek.Model
             AnimationTimer = animationTimer;
         }
 
-        public NotificationModel(float startTimer, float showTimer, float animationTimer, string showText, string logo)
+        public NotificationModel(float startTimer, float showTimer, float animationTimer, string showText)
         {
             StartTimer = startTimer;
             ShowTimer = showTimer;
             AnimationTimer = animationTimer;
             ShowText = showText;
-            Logo = logo;
         }
     }
 }

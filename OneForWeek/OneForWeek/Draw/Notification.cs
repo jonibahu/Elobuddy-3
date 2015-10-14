@@ -29,6 +29,15 @@ namespace OneForWeek.Draw
         {
             notifications.Add(notification);
 
+            if (string.IsNullOrEmpty(notification.ShowText))
+            {
+                MainBar = new Sprite(() => TextureLoader["logo"]);
+            }
+            else
+            {
+                MainBar = new Sprite(() => TextureLoader["notification"]);
+            }
+
             Init();
             Drawing.OnEndScene += OnDraw;
         }
@@ -37,76 +46,78 @@ namespace OneForWeek.Draw
         {
             Text = new Text("", new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold)) { Color = System.Drawing.Color.AntiqueWhite };
 
-            MainBar = new Sprite(() => TextureLoader["notification"]);
-
             AppDomain.CurrentDomain.DomainUnload += OnDomainUnload;
             AppDomain.CurrentDomain.ProcessExit += OnDomainUnload;
         }
 
         private static void OnDraw(EventArgs args)
         {
-            if(notifications.Count == 0) return;
-
-            var lastNotifPos = new Vector2();
-            var auxNotifications = new List<NotificationModel>();
-
-            foreach (var notificationModel in notifications)
+            if (notifications.Count != 0)
             {
-                var diffTime = (notificationModel.StartTimer + notificationModel.AnimationTimer + notificationModel.ShowTimer) - Game.Time;
+                var lastNotifPos = new Vector2();
+                var auxNotifications = new List<NotificationModel>();
 
-                var animationEnd = notificationModel.StartTimer + notificationModel.AnimationTimer - Game.Time;
-
-                var diffPos = 0f;
-
-                if (animationEnd > 0)
+                foreach (var notificationModel in notifications)
                 {
-                    diffPos = 200 * animationEnd;
-                }
+                    var diffTime = (notificationModel.StartTimer + notificationModel.AnimationTimer + notificationModel.ShowTimer) - Game.Time;
 
-                if (diffTime > 0)
-                {
-                    if (lastNotifPos.Equals(new Vector2()))
+                    var animationEnd = notificationModel.StartTimer + notificationModel.AnimationTimer - Game.Time;
+
+                    var diffPos = 0f;
+
+                    if (animationEnd > 0)
                     {
-                        var pos = new Vector2(Drawing.Width - 220, y: Drawing.Height/13.5f - diffPos);
-                        MainBar.Draw(pos);
-                        lastNotifPos = pos;
-                        if (!string.IsNullOrEmpty(notificationModel.ShowText))
+                        diffPos = 200 * animationEnd;
+                    }
+
+                    if (diffTime > 0)
+                    {
+                        if (lastNotifPos.Equals(new Vector2()))
                         {
-                            pos.Y += 20;
-                            pos.X += 30;
-                            Text.Position = pos;
-                            Text.TextValue = notificationModel.ShowText;
-                            Text.TextAlign = Text.Align.Center;
-                            Text.Draw();
+                            var pos = new Vector2(Drawing.Width - 220, y: Drawing.Height / 13.5f - diffPos);
+                            MainBar.Draw(pos);
+                            lastNotifPos = pos;
+                            if (!string.IsNullOrEmpty(notificationModel.ShowText))
+                            {
+                                pos.Y += 20;
+                                pos.X += 30;
+                                Text.Position = pos;
+                                Text.TextValue = notificationModel.ShowText;
+                                Text.TextAlign = Text.Align.Center;
+                                Text.Draw();
+                            }
+                        }
+                        else
+                        {
+                            var pos = new Vector2(lastNotifPos.X, y: lastNotifPos.Y + 70);
+                            MainBar.Draw(pos);
+                            lastNotifPos = pos;
+                            if (!string.IsNullOrEmpty(notificationModel.ShowText))
+                            {
+                                pos.Y += 20;
+                                pos.X += 30;
+                                Text.Position = pos;
+                                Text.TextValue = notificationModel.ShowText;
+                                Text.TextAlign = Text.Align.Center;
+                                Text.Draw();
+                            }
                         }
                     }
                     else
                     {
-                        var pos = new Vector2(lastNotifPos.X, y: lastNotifPos.Y + 70);
-                        MainBar.Draw(pos);
-                        lastNotifPos = pos;
-                        if (!string.IsNullOrEmpty(notificationModel.ShowText))
-                        {
-                            pos.Y += 20;
-                            pos.X += 30;
-                            Text.Position = pos;
-                            Text.TextValue = notificationModel.ShowText;
-                            Text.TextAlign = Text.Align.Center;
-                            Text.Draw();
-                        }
+                        auxNotifications.Add(notificationModel);
                     }
                 }
-                else
+
+                if (auxNotifications.Count > 0)
                 {
-                    auxNotifications.Add(notificationModel);
+                    notifications = notifications.Except(auxNotifications).ToList();
                 }
             }
-
-            if (auxNotifications.Count > 0)
+            else
             {
-                notifications = notifications.Except(auxNotifications).ToList();
+                Drawing.OnDraw -= OnDraw;
             }
-
         }
 
         private static void OnDomainUnload(object sender, EventArgs e)
