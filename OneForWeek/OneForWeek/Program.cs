@@ -19,16 +19,15 @@ namespace OneForWeek
         private static void OnLoadCompleted(EventArgs args)
         {
             try
-			{
-				var handle = Activator.CreateInstance(null, "OneForWeek.Plugin.Hero." + ObjectManager.Player.ChampionName);
-				Champion = (PluginModel) handle.Unwrap();
-                
-			}
-			catch (Exception)
-			{
-				Notification.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, ObjectManager.Player.ChampionName + " is Not Supported", Color.Red));
-			}
-            
+            {
+                var handle = Activator.CreateInstance(null, "OneForWeek.Plugin.Hero." + ObjectManager.Player.ChampionName);
+                Champion = (PluginModel)handle.Unwrap();
+            }
+            catch (Exception)
+            {
+                Notification.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, ObjectManager.Player.ChampionName + " is Not Supported", Color.Red));
+            }
+
         }
 
     }
