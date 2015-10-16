@@ -2,17 +2,15 @@
 using System.Drawing;
 using EloBuddy;
 using EloBuddy.SDK.Events;
-using EloBuddy.SDK.Rendering;
-using OneForWeek.Draw;
-using OneForWeek.Model;
-using OneForWeek.Properties;
-using SharpDX;
-using Color = System.Drawing.Color;
+using OneForWeek.Draw.Notifications;
+using OneForWeek.Model.Notification;
+using OneForWeek.Plugin;
 
 namespace OneForWeek
 {
     class Program
     {
+        public static PluginModel Champion;
         static void Main(string[] args)
         {
             Loading.OnLoadingComplete += OnLoadCompleted;
@@ -20,10 +18,18 @@ namespace OneForWeek
 
         private static void OnLoadCompleted(EventArgs args)
         {
-            Notification.DrawNotification(new NotificationModel(Game.Time, 5f, 1f, "I'm a toaster by Vector"));
-            Notification.DrawNotification(new NotificationModel(Game.Time, 10f, 1f, "Elobuddy"));
-            Notification.DrawNotification(new NotificationModel(Game.Time, 15f, 1f, null));
+            try
+			{
+				var handle = Activator.CreateInstance(null, "OneForWeek.Plugin.Hero." + ObjectManager.Player.ChampionName);
+				Champion = (PluginModel) handle.Unwrap();
+                
+			}
+			catch (Exception)
+			{
+				Notification.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, ObjectManager.Player.ChampionName + " is Not Supported", Color.Red));
+			}
+            
         }
-        
+
     }
 }

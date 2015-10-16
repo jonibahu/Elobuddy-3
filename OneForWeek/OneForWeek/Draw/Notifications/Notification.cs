@@ -2,41 +2,32 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EloBuddy;
 using EloBuddy.SDK.Rendering;
-using OneForWeek.Model;
+using OneForWeek.Model.Notification;
 using OneForWeek.Properties;
 using SharpDX;
+using Color = System.Drawing.Color;
 
-namespace OneForWeek.Draw
+namespace OneForWeek.Draw.Notifications
 {
     static class Notification
     {
-        static List<NotificationModel> notifications = new List<NotificationModel>();
+        static List<NotificationModel> _notifications = new List<NotificationModel>();
         public static readonly TextureLoader TextureLoader = new TextureLoader();
         private static Sprite MainBar { get; set; }
-        private static Text Text { get; set; }
+        private static readonly Text Text = new Text("", new Font(FontFamily.GenericSansSerif, 12, FontStyle.Regular)) { Color = Color.White };
 
         static Notification()
         {
             TextureLoader.Load("notification", Resources.notification);
-            TextureLoader.Load("logo", Resources.logo);
         }
 
         public static void DrawNotification(NotificationModel notification)
         {
-            notifications.Add(notification);
+            _notifications.Add(notification);
 
-            if (string.IsNullOrEmpty(notification.ShowText))
-            {
-                MainBar = new Sprite(() => TextureLoader["logo"]);
-            }
-            else
-            {
-                MainBar = new Sprite(() => TextureLoader["notification"]);
-            }
+            MainBar = new Sprite(() => TextureLoader["notification"]);
 
             Init();
             Drawing.OnEndScene += OnDraw;
@@ -44,20 +35,18 @@ namespace OneForWeek.Draw
 
         private static void Init()
         {
-            Text = new Text("", new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold)) { Color = System.Drawing.Color.AntiqueWhite };
-
             AppDomain.CurrentDomain.DomainUnload += OnDomainUnload;
             AppDomain.CurrentDomain.ProcessExit += OnDomainUnload;
         }
 
         private static void OnDraw(EventArgs args)
         {
-            if (notifications.Count != 0)
+            if (_notifications.Count != 0)
             {
                 var lastNotifPos = new Vector2();
                 var auxNotifications = new List<NotificationModel>();
 
-                foreach (var notificationModel in notifications)
+                foreach (var notificationModel in _notifications)
                 {
                     var diffTime = (notificationModel.StartTimer + notificationModel.AnimationTimer + notificationModel.ShowTimer) - Game.Time;
 
@@ -77,30 +66,34 @@ namespace OneForWeek.Draw
                             var pos = new Vector2(Drawing.Width - 220, y: Drawing.Height / 13.5f - diffPos);
                             MainBar.Draw(pos);
                             lastNotifPos = pos;
-                            if (!string.IsNullOrEmpty(notificationModel.ShowText))
-                            {
-                                pos.Y += 20;
-                                pos.X += 30;
-                                Text.Position = pos;
-                                Text.TextValue = notificationModel.ShowText;
-                                Text.TextAlign = Text.Align.Center;
-                                Text.Draw();
-                            }
+                            Text.TextValue = notificationModel.ShowText;
+                            
+                            var vector1 = new Vector2(Text.Bounding.Width, Text.Bounding.Height);
+                            var vector2 = new Vector2(Resources.notification.Size.Width,
+                                Resources.notification.Size.Height);
+
+                            pos += (vector2 - vector1) / 2;
+
+                            Text.Position = pos;
+                            Text.Color = notificationModel.Color;
+                            Text.Draw();
                         }
                         else
                         {
                             var pos = new Vector2(lastNotifPos.X, y: lastNotifPos.Y + 70);
                             MainBar.Draw(pos);
                             lastNotifPos = pos;
-                            if (!string.IsNullOrEmpty(notificationModel.ShowText))
-                            {
-                                pos.Y += 20;
-                                pos.X += 30;
-                                Text.Position = pos;
-                                Text.TextValue = notificationModel.ShowText;
-                                Text.TextAlign = Text.Align.Center;
-                                Text.Draw();
-                            }
+                            Text.TextValue = notificationModel.ShowText;
+
+                            var vector1 = new Vector2(Text.Bounding.Width, Text.Bounding.Height);
+                            var vector2 = new Vector2(Resources.notification.Size.Width,
+                                Resources.notification.Size.Height);
+
+                            pos += (vector2 - vector1) / 2;
+
+                            Text.Position = pos;
+                            Text.Color = notificationModel.Color;
+                            Text.Draw();
                         }
                     }
                     else
@@ -111,13 +104,18 @@ namespace OneForWeek.Draw
 
                 if (auxNotifications.Count > 0)
                 {
-                    notifications = notifications.Except(auxNotifications).ToList();
+                    _notifications = _notifications.Except(auxNotifications).ToList();
                 }
             }
             else
             {
                 Drawing.OnDraw -= OnDraw;
             }
+        }
+
+        public static bool IsDivisble(int x, int n)
+        {
+            return (x % n) == 0;
         }
 
         private static void OnDomainUnload(object sender, EventArgs e)

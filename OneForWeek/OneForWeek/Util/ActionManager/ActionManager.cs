@@ -1,12 +1,9 @@
-﻿using EloBuddy;
+﻿using System;
+using EloBuddy;
 using OneForWeek.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OneForWeek.Model.ActionQueue;
 
-namespace OneForWeek.Util
+namespace OneForWeek.Util.ActionManager
 {
     static class ActionManager
     {

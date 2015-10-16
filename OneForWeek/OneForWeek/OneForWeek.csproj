@@ -58,9 +58,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Draw\Notifications\Notification.cs" />
-    <Compile Include="Model\ActionQueueItem.cs" />
-    <Compile Include="Model\ActionQueueList.cs" />
-    <Compile Include="Model\NotificationModel.cs" />
+    <Compile Include="Model\ActionQueue\ActionQueueItem.cs" />
+    <Compile Include="Model\ActionQueue\ActionQueueList.cs" />
+    <Compile Include="Model\Notification\NotificationModel.cs" />
+    <Compile Include="Plugin\Hero\Katarina.cs" />
+    <Compile Include="Plugin\IChampion.cs" />
+    <Compile Include="Plugin\PluginModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -73,15 +76,14 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Util\Misc\" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\logo.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\notification.png" />
