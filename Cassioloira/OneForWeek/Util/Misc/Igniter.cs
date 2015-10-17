@@ -19,13 +19,14 @@ namespace OneForWeek.Util.Misc
 
         public static void Init()
         {
-            if(ObjectManager.Player.GetSpellSlotFromName("summonerdot") == SpellSlot.Unknown) return;
+            if (ObjectManager.Player.GetSpellSlotFromName("summonerdot") == SpellSlot.Unknown) return;
 
             Ignite = new Spell.Targeted(ObjectManager.Player.GetSpellSlotFromName("summonerdot"), 550);
 
             IgniteMenu = MainMenu.AddMenu("Igniter", "Igniter");
             IgniteMenu.AddGroupLabel("Draw");
             IgniteMenu.Add("useIgnite", new CheckBox("Use Igniter", true));
+            IgniteMenu.AddGroupLabel("Misc");
             IgniteMenu.Add("minRange", new Slider("Min Range to cast it: ", 400, 1, 550));
             IgniteMenu.Add("drawRange", new CheckBox("Draw ignite Range", false));
 
@@ -35,7 +36,7 @@ namespace OneForWeek.Util.Misc
 
         private static void OnDraw(EventArgs args)
         {
-            if(!Misc.IsChecked(IgniteMenu, "drawRange"))return;
+            if (!Misc.IsChecked(IgniteMenu, "drawRange")) return;
 
             Circle.Draw(Ignite.IsReady() ? Color.Blue : Color.Red, Ignite.Range, Player.Instance.Position);
         }
@@ -45,9 +46,10 @@ namespace OneForWeek.Util.Misc
             if (ObjectManager.Player.IsDead || !Ignite.IsReady() || !Misc.IsChecked(IgniteMenu, "useIgnite")) return;
 
             var target2 = ObjectManager.Get<AIHeroClient>()
-                    .Where(h => h.IsValidTarget(Ignite.Range) && h.Distance(Player.Instance) >= Misc.GetSliderValue(IgniteMenu, "minRange") && h.Health < ObjectManager.Player.GetSummonerSpellDamage(h, DamageLibrary.SummonerSpells.Ignite));
+                    .FirstOrDefault(h => h.IsValidTarget(Ignite.Range) && h.Distance(Player.Instance) >= Misc.GetSliderValue(IgniteMenu, "minRange") && h.Health < ObjectManager.Player.GetSummonerSpellDamage(h, DamageLibrary.SummonerSpells.Ignite));
 
-            Ignite.Cast(target2.First());
+            if (target2.IsValidTarget(Ignite.Range))
+                Ignite.Cast(target2);
         }
     }
 }
