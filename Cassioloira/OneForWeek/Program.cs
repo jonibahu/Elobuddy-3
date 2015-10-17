@@ -5,6 +5,7 @@ using EloBuddy.SDK.Events;
 using OneForWeek.Draw.Notifications;
 using OneForWeek.Model.Notification;
 using OneForWeek.Plugin.Hero;
+using OneForWeek.Util.Misc;
 
 namespace OneForWeek
 {
@@ -22,6 +23,7 @@ namespace OneForWeek
                 Notification.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, ObjectManager.Player.ChampionName + " injected !", Color.DeepSkyBlue));
                 Notification.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, "Addon by: Vector", Color.LimeGreen));
                 new Cassiopeia().Init();
+                Igniter.Init();
             }
             else
             {
