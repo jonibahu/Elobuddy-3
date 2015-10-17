@@ -65,6 +65,10 @@ namespace OneForWeek.Plugin.Hero
             ComboMenu.Add("comboW", new CheckBox("Use W", true));
             ComboMenu.Add("comboE", new CheckBox("Use E", true));
             ComboMenu.Add("comboR", new CheckBox("Use R", true));
+            ComboMenu.AddGroupLabel("Combo Misc");
+            ComboMenu.Add("disableAA", new CheckBox("Disable AA while combo", false));
+            ComboMenu.AddLabel("This option overrides min enemies for R");
+            ComboMenu.Add("flashCombo", new CheckBox("Flash R Combo if Killable", false));
             ComboMenu.Add("rsMinEnemiesForR", new Slider("Min Enemies Facing for cast R: ", 2, 1, 5));
 
             HarassMenu = Menu.AddSubMenu("Harass - " + GCharname, GCharname + "Harass");
@@ -85,17 +89,21 @@ namespace OneForWeek.Plugin.Hero
             MiscMenu = Menu.AddSubMenu("Misc - " + GCharname, GCharname + "Misc");
             MiscMenu.Add("poisonForE", new CheckBox("Only Cast E in Poisoned targets", true));
             MiscMenu.Add("miscDelayE", new Slider("Delay E Cast by: ", 150, 0, 500));
-            MiscMenu.Add("miscAntiGap", new CheckBox("Anti Gap Closer", true));
-            MiscMenu.Add("miscMinHpAntiGap", new Slider("Min HP to Anti Gap Closer: ", 40, 0, 100));
+            MiscMenu.Add("ksOn", new CheckBox("Try to KS", true));
+            MiscMenu.Add("miscAntiGapW", new CheckBox("Anti Gap Closer W", true));
+            MiscMenu.Add("miscAntiGapR", new CheckBox("Anti Gap Closer R", true));
+            MiscMenu.Add("miscMinHpAntiGap", new Slider("Min HP to Anti Gap Closer R: ", 40, 0, 100));
             MiscMenu.Add("miscInterruptDangerous", new CheckBox("Interrupt Dangerous Spells", true));
 
         }
 
         public void OnCombo()
         {
-            var target = TargetSelector.GetTarget(Q.Range, DamageType.Magical);
+            var target = TargetSelector.GetTarget(R.Range + 400, DamageType.Magical);
 
             if (target == null || !target.IsValidTarget(Q.Range)) return;
+
+            var flash = Player.Spells.FirstOrDefault(a => a.SData.Name == "summonerflash");
 
             if (Misc.IsChecked(ComboMenu, "comboQ") && Q.IsReady() && target.IsValidTarget(Q.Range) && !IsPoisoned(target))
             {
@@ -134,6 +142,12 @@ namespace OneForWeek.Plugin.Hero
 
             if (Misc.IsChecked(ComboMenu, "comboR") && R.IsReady())
             {
+                if (Misc.IsChecked(ComboMenu, "flashCombo") && PossibleDamage(target) > target.Health && target.IsFacing(_Player) && target.Distance(_Player) > R.Range && (flash != null && flash.IsReady))
+                {
+                    Player.CastSpell(flash.Slot, target.Position);
+                    Core.DelayAction(() => R.Cast(target), 250);
+                }
+
                 var countFacing = EntityManager.Heroes.Enemies.Count(t => t.IsValidTarget(R.Range) && t.IsFacing(_Player));
 
                 if (Misc.GetSliderValue(ComboMenu, "rsMinEnemiesForR") <= countFacing && target.IsFacing(_Player) && target.IsValidTarget(R.Range - 50))
@@ -250,6 +264,9 @@ namespace OneForWeek.Plugin.Hero
             switch (Orbwalker.ActiveModesFlags)
             {
                 case Orbwalker.ActiveModes.Combo:
+                    if (Misc.IsChecked(ComboMenu, "disableAA"))
+                        Orbwalker.DisableAttacking = true;
+
                     OnCombo();
                     break;
                 case Orbwalker.ActiveModes.Flee:
@@ -260,8 +277,14 @@ namespace OneForWeek.Plugin.Hero
                     break;
             }
 
+            if(Orbwalker.DisableAttacking && Orbwalker.ActiveModesFlags != Orbwalker.ActiveModes.Combo)
+                Orbwalker.DisableAttacking = false;
+
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear))
                 OnLaneClear();
+
+            if(Misc.IsChecked(MiscMenu, "ksOn"))
+                KS();
         }
 
         public void OnDraw(EventArgs args)
@@ -302,10 +325,13 @@ namespace OneForWeek.Plugin.Hero
         {
             if(!sender.IsEnemy) return;
 
-            if ((e.End.Distance(_Player) < 50 || e.Sender.IsAttackingPlayer) &&
+            if ((e.End.Distance(_Player) < 50 || e.Sender.IsAttackingPlayer) && Misc.IsChecked(MiscMenu, "miscAntiGapR") &&
                 _Player.HealthPercent < Misc.GetSliderValue(MiscMenu, "miscMinHpAntiGap") && R.IsReady() && R.IsInRange(sender))
             {
                 R.Cast(sender);
+            }else if ((e.End.Distance(_Player) < 50 || e.Sender.IsAttackingPlayer) && Misc.IsChecked(MiscMenu, "miscAntiGapW") && W.IsReady() && W.IsInRange(sender))
+            {
+                W.Cast(e.End);
             }
         }
 
@@ -338,6 +364,40 @@ namespace OneForWeek.Plugin.Hero
         public void GameObjectOnDelete(GameObject sender, EventArgs args)
         {
 
+        }
+
+        private void KS()
+        {
+
+            if (E.IsReady() && EntityManager.Heroes.Enemies.Any(t => t.IsValidTarget(E.Range) && t.Health < _Player.GetSpellDamage(t, SpellSlot.E)))
+            {
+                E.Cast(EntityManager.Heroes.Enemies.FirstOrDefault(t => t.IsValidTarget(E.Range) && t.Health < _Player.GetSpellDamage(t, SpellSlot.E)));
+            }
+
+            if (Q.IsReady() && EntityManager.Heroes.Enemies.Any(t => t.IsValidTarget(Q.Range) && t.Health < _Player.GetSpellDamage(t, SpellSlot.Q)))
+            {
+                var predictionQ = Q.GetPrediction(EntityManager.Heroes.Enemies.FirstOrDefault(t => t.IsValidTarget(Q.Range) && t.Health < _Player.GetSpellDamage(t, SpellSlot.Q)));
+
+                if (predictionQ.HitChancePercent >= 70)
+                {
+                    Q.Cast(predictionQ.CastPosition);
+                }
+            }
+        }
+
+        private static float PossibleDamage(Obj_AI_Base target)
+        {
+            var damage = 0f;
+            if (R.IsReady())
+                damage = _Player.GetSpellDamage(target, SpellSlot.R);
+            if (E.IsReady())
+                damage = _Player.GetSpellDamage(target, SpellSlot.E);
+            if (W.IsReady())
+                damage = _Player.GetSpellDamage(target, SpellSlot.W);
+            if (Q.IsReady())
+                damage = _Player.GetSpellDamage(target, SpellSlot.Q);
+
+            return damage;
         }
 
         public bool IsPoisoned(Obj_AI_Base target)
