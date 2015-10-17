@@ -7,6 +7,8 @@ using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
+using EloBuddy.SDK.Rendering;
+using SharpDX;
 
 namespace OneForWeek.Util.Misc
 {
@@ -24,6 +26,14 @@ namespace OneForWeek.Util.Misc
             IgniteMenu.Add("drawRange", new CheckBox("Draw ignite Range", false));
 
             Game.OnUpdate += OnGameUpdate;
+            Drawing.OnDraw += OnDraw;
+        }
+
+        private static void OnDraw(EventArgs args)
+        {
+            if(!Misc.IsChecked(IgniteMenu, "drawRange"))return;
+
+            Circle.Draw(Ignite.IsReady() ? Color.Blue : Color.Red, Ignite.Range, Player.Instance.Position);
         }
 
         private static void OnGameUpdate(EventArgs args)
