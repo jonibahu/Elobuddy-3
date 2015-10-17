@@ -76,6 +76,8 @@ namespace OneForWeek.Plugin.Hero
             HarassMenu.Add("hsQ", new CheckBox("Use Q", true));
             HarassMenu.Add("hsW", new CheckBox("Use W", true));
             HarassMenu.Add("hsE", new CheckBox("Use E", true));
+            HarassMenu.AddGroupLabel("Harass Misc");
+            HarassMenu.Add("disableAAHS", new CheckBox("Disable AA while harass", false));
             HarassMenu.Add("hsPE", new CheckBox("Only E if poisoned", true));
 
             LaneClearMenu = Menu.AddSubMenu("Lane Clear - " + GCharname, GCharname + "LaneClear");
@@ -92,6 +94,7 @@ namespace OneForWeek.Plugin.Hero
             MiscMenu.Add("ksOn", new CheckBox("Try to KS", true));
             MiscMenu.Add("miscAntiGapW", new CheckBox("Anti Gap Closer W", true));
             MiscMenu.Add("miscAntiGapR", new CheckBox("Anti Gap Closer R", true));
+            MiscMenu.Add("miscAntiMissR", new CheckBox("Block R if Miss", true));
             MiscMenu.Add("miscMinHpAntiGap", new Slider("Min HP to Anti Gap Closer R: ", 40, 0, 100));
             MiscMenu.Add("miscInterruptDangerous", new CheckBox("Interrupt Dangerous Spells", true));
 
@@ -273,11 +276,13 @@ namespace OneForWeek.Plugin.Hero
                     OnFlee();
                     break;
                 case Orbwalker.ActiveModes.Harass:
+                    if (Misc.IsChecked(ComboMenu, "disableAAHS"))
+                        Orbwalker.DisableAttacking = true;
                     OnHarass();
                     break;
             }
 
-            if(Orbwalker.DisableAttacking && Orbwalker.ActiveModesFlags != Orbwalker.ActiveModes.Combo)
+            if (Orbwalker.DisableAttacking && (Orbwalker.ActiveModesFlags != Orbwalker.ActiveModes.Combo && Orbwalker.ActiveModesFlags != Orbwalker.ActiveModes.Harass))
                 Orbwalker.DisableAttacking = false;
 
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear))
@@ -354,6 +359,14 @@ namespace OneForWeek.Plugin.Hero
                 }
             }
 
+            if (args.SData.Name == "CassiopeiaPetrofyingGaze" && Misc.IsChecked(MiscMenu, "miscAntiMissR"))
+            {
+                if (EntityManager.Heroes.Enemies.Count(t => t.IsValidTarget(R.Range) && t.IsFacing(_Player)) < 1)
+                {
+                    args.Process = false;
+                }
+            }
+
         }
 
         public void GameObjectOnCreate(GameObject sender, EventArgs args)
@@ -366,7 +379,7 @@ namespace OneForWeek.Plugin.Hero
 
         }
 
-        private void KS()
+        private static void KS()
         {
 
             if (E.IsReady() && EntityManager.Heroes.Enemies.Any(t => t.IsValidTarget(E.Range) && t.Health < _Player.GetSpellDamage(t, SpellSlot.E)))

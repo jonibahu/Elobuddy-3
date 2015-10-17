@@ -19,13 +19,15 @@ namespace OneForWeek.Util.Misc
 
         public static void Init()
         {
+            if(ObjectManager.Player.GetSpellSlotFromName("summonerdot") == SpellSlot.Unknown) return;
+
+            Ignite = new Spell.Targeted(ObjectManager.Player.GetSpellSlotFromName("summonerdot"), 550);
+
             IgniteMenu = MainMenu.AddMenu("Igniter", "Igniter");
             IgniteMenu.AddGroupLabel("Draw");
             IgniteMenu.Add("useIgnite", new CheckBox("Use Igniter", true));
             IgniteMenu.Add("minRange", new Slider("Min Range to cast it: ", 400, 1, 550));
             IgniteMenu.Add("drawRange", new CheckBox("Draw ignite Range", false));
-
-            Ignite = new Spell.Targeted(ObjectManager.Player.GetSpellSlotFromName("summonerdot"), 550);
 
             Game.OnUpdate += OnGameUpdate;
             Drawing.OnDraw += OnDraw;
