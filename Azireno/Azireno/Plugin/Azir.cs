@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Azireno.Modes;
 using Azireno.Util;
 using EloBuddy;
@@ -18,6 +20,8 @@ namespace Azireno.Plugin
         static Flee flee = new Flee();
         static Harass harass = new Harass();
         static LaneClear laneClear = new LaneClear();
+
+        public static List<Obj_AI_Minion> AzirSoldiers = new List<Obj_AI_Minion>();
         
         public void GameObjectOnCreate(GameObject sender, EventArgs args){}
 
@@ -63,9 +67,9 @@ namespace Azireno.Plugin
             if (Misc.isChecked(DrawMenu, "drawR"))
                 Circle.Draw(R.IsReady() ? Color.Blue : Color.Red, R.Range, Player.Instance.Position);
 
-            if (Orbwalker.ValidAzirSoldiers.Count > 0 && Misc.isChecked(DrawMenu, "drawSoldierRange"))
+            if (Azir.AzirSoldiers.Count > 0 && Misc.isChecked(DrawMenu, "drawSoldierRange"))
             {
-                foreach (var validAzirSoldier in Orbwalker.ValidAzirSoldiers)
+                foreach (var validAzirSoldier in Azir.AzirSoldiers)
                 {
                     Circle.Draw(Color.White, Orbwalker.AzirSoldierAutoAttackRange, validAzirSoldier.Position);
                 }
@@ -128,6 +132,22 @@ namespace Azireno.Plugin
 
             Game.OnUpdate += OnGameUpdate;
             Drawing.OnDraw += OnDraw;
+
+            GameObject.OnCreate += OnCreateBase;
+
+        }
+
+        private static void OnCreateBase(GameObject sender, EventArgs args)
+        {
+            if (sender.Name == "AzirSoldier" && AzirSoldiers.Count <= 2 && sender.Team == _Player.Team)
+            {
+                AzirSoldiers.Add((Obj_AI_Minion) sender);
+            }
+
+            if (sender.Name == "Azir_Base_W_Soldier_Dissipate.troy" && AzirSoldiers.Count > 0)
+            {
+                AzirSoldiers.Remove(AzirSoldiers.Aggregate((curMin, x) => (curMin == null || x.Distance(sender.Position) < curMin.Distance(sender.Position) ? x : curMin)));
+            }
 
         }
 

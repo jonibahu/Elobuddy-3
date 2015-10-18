@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Azireno.Plugin;
 using Azireno.Util;
 using EloBuddy.SDK;
 
@@ -28,15 +29,15 @@ namespace Azireno.Modes
                         .Select(xm => xm.ServerPosition.To2D())
                         .ToList(), Orbwalker.AzirSoldierAutoAttackRange, W.Range);
 
-            if (Orbwalker.ValidAzirSoldiers.Count > 0)
+            if (Azir.AzirSoldiers.Count > 0)
             {
-                foreach (var validAzirSoldier in Orbwalker.ValidAzirSoldiers)
+                foreach (var validAzirSoldier in Azir.AzirSoldiers)
                 {
                     if (validAzirSoldier.Distance(bestFarm.Position) < 50)
                     {
                         return;
                     }
-                    else if (Orbwalker.ValidAzirSoldiers.Count >= 2)
+                    else if (Azir.AzirSoldiers.Count >= 2)
                     {
                         Q.Cast(m);
                         return;

@@ -1,4 +1,5 @@
-﻿using Azireno.Util;
+﻿using Azireno.Plugin;
+using Azireno.Util;
 using Azireno.Util.Helpers;
 using EloBuddy;
 using EloBuddy.SDK;
@@ -21,7 +22,7 @@ namespace Azireno.Modes
 
             if (DmgLib.E(target) > target.Health && E.IsReady() && Misc.isChecked(ComboMenu, "finisherE"))
             {
-                foreach (var validAzirSoldier in Orbwalker.ValidAzirSoldiers)
+                foreach (var validAzirSoldier in Azir.AzirSoldiers)
                 {
                     if (target.Position.Between(_Player.Position, validAzirSoldier.ServerPosition))
                     {
@@ -31,7 +32,7 @@ namespace Azireno.Modes
             }
 
             if(Misc.isChecked(ComboMenu, "comboSoldiers"))
-                SoldierController.AutoPilot(Orbwalker.ValidAzirSoldiers, target);
+                SoldierController.AutoPilot(Azir.AzirSoldiers, target);
         }
     }
 }

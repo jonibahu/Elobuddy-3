@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Azireno.Modes;
+using Azireno.Plugin;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Enumerations;
@@ -14,11 +15,14 @@ namespace Azireno.Util
         {
             if (target == null || !target.IsValidTarget()) return;
 
+            soldiers = Orbwalker.AzirSoldiers;
+
             var predictedPositions = new Dictionary<int, Tuple<int, PredictionResult>>();
             var predictionQ = ModeModel.Q.GetPrediction(target);
             var predictionW = ModeModel.W.GetPrediction(target);
             var pos = target.ServerPosition;
             pos = ModeModel._Player.Distance(target.ServerPosition) > ModeModel.W.Range ? ModeModel._Player.ServerPosition.Shorten(pos, -ModeModel.W.Range) : ModeModel._Player.ServerPosition.Extend(pos, ModeModel.W.Range).To3D();
+
 
             if (soldiers.Count == 0)
             {
@@ -65,10 +69,6 @@ namespace Azireno.Util
                     Player.CastSpell(SpellSlot.Q, predictionQ.CastPosition);
                 }
             }
-
-
         }
-
-
     }
 }
