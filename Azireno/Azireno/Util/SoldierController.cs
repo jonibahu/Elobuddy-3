@@ -15,7 +15,7 @@ namespace Azireno.Util
         {
             if (target == null || !target.IsValidTarget()) return;
 
-            soldiers = Orbwalker.AzirSoldiers;
+            soldiers = Azir.AzirSoldiers;
 
             var predictedPositions = new Dictionary<int, Tuple<int, PredictionResult>>();
             var predictionQ = ModeModel.Q.GetPrediction(target);

@@ -159,7 +159,7 @@ namespace Azireno.Plugin
             R = new Spell.Skillshot(SpellSlot.R, 250, SkillShotType.Linear);
             InitMenu();
 
-            if(_Player.Spellbook.GetSpell(SpellSlot.W).Level == 0)
+            if(_Player.Spellbook.GetSpell(SpellSlot.W).Level - 1 == 0)
                 _Player.Spellbook.LevelSpell(SpellSlot.W); // Azir cannot user other skill lvl 1 so dur
         }
 
