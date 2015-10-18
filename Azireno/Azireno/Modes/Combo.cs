@@ -17,8 +17,6 @@ namespace Azireno.Modes
 
             if(target == null || !target.IsValidTarget()) return;
 
-            Console.WriteLine(Azir.AzirSoldiers.Count);
-
             var predictionR = R.GetPrediction(target);
             if (DmgLib.R(target) > target.Health && R.IsReady() && R.IsInRange(target) && predictionR.HitChance >= HitChance.Medium && Misc.isChecked(ComboMenu, "finisherR"))
                 R.Cast(predictionR.CastPosition);
