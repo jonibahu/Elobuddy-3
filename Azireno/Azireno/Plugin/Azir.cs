@@ -21,6 +21,12 @@ namespace Azireno.Plugin
         static Harass harass = new Harass();
         static LaneClear laneClear = new LaneClear();
 
+        public static AIHeroClient selectedtarget;
+        public static Obj_AI_Base selectedToTarget;
+
+        private static int _lastClick;
+        public static bool IsSelected;
+
         public static List<Obj_AI_Minion> AzirSoldiers = new List<Obj_AI_Minion>();
         
         public void GameObjectOnCreate(GameObject sender, EventArgs args){}
@@ -75,11 +81,61 @@ namespace Azireno.Plugin
                 }
             }
 
+            if (selectedtarget != null)
+            {
+                new Circle
+                {
+                    Color = System.Drawing.Color.Red,
+                    Radius = 150
+                }.Draw(selectedtarget.Position);
+            }
+
+            if (selectedToTarget != null)
+            {
+                new Circle
+                {
+                    Color = System.Drawing.Color.Blue,
+                    Radius = 150
+                }.Draw(selectedToTarget.Position);
+            }
+
+        }
+
+        private static void Game_OnWndProc(WndEventArgs args)
+        {
+            if (args.Msg != 0x202) return;
+            if (_lastClick + 500 <= Environment.TickCount)
+            {
+                var selected =
+                    ObjectManager.Get<Obj_AI_Base>()
+                        .OrderBy(a => a.Distance(ObjectManager.Player))
+                        .FirstOrDefault(a =>a.Distance(Game.CursorPos) < 200);
+
+                if(selected == null) return;
+
+                if (selected.IsEnemy && selected.Type == _Player.Type)
+                {
+                    selectedtarget = (AIHeroClient) selected;
+                }
+                else
+                {
+                    selectedToTarget = selected;
+                }
+
+                if (selectedtarget != null)
+                {
+                    _lastClick = Environment.TickCount;
+                }
+            }
         }
 
         public void OnGameUpdate(EventArgs args)
         {
-            //TODO: Insec
+            if (Misc.isKeyActive(ComboMenu, "keyBindInsec"))//&& selectedtarget != null && selectedToTarget != null
+            {
+                new Brain().InsecTarget(selectedtarget, selectedToTarget);
+            }
+
             _target = TargetSelector.GetTarget(1100, DamageType.Magical);
             switch (Orbwalker.ActiveModesFlags)
             {
@@ -131,6 +187,7 @@ namespace Azireno.Plugin
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpell;
 
             Game.OnUpdate += OnGameUpdate;
+            Game.OnWndProc += Game_OnWndProc;
             Drawing.OnDraw += OnDraw;
 
             GameObject.OnCreate += OnCreateBase;
@@ -182,6 +239,8 @@ namespace Azireno.Plugin
 
             ComboMenu = Menu.AddSubMenu("Combo - " + G_charname, "azirCombo");
             ComboMenu.AddGroupLabel("Combo");
+            ComboMenu.Add("keyBindInsec", new KeyBind("Insec", false, KeyBind.BindTypes.HoldActive));
+            ComboMenu.Add("insecFlashForce", new CheckBox("Force Flash", true));
             ComboMenu.Add("comboSoldiers", new CheckBox("Auto Pilot Soldiers", true));
             ComboMenu.Add("finisherE", new CheckBox("Allow E to finish enemy", true));
             ComboMenu.Add("finisherR", new CheckBox("Allow R to finish enemy", true));

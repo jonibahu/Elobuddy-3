@@ -1,4 +1,5 @@
-﻿using Azireno.Modes;
+﻿using System.Linq;
+using Azireno.Modes;
 using EloBuddy;
 using EloBuddy.SDK;
 using SharpDX;
@@ -7,26 +8,74 @@ namespace Azireno.Util
 {
     class Brain : ModeModel
     {
-        public void CastFly()
+        public bool CastFly()
         {
             var pos = _Player.Position.Extend(Game.CursorPos, 875).To3D();
             pos = _Player.Distance(Game.CursorPos) > W.Range ? _Player.Position.Shorten(pos, -W.Range) : _Player.Position.Extend(pos, W.Range).To3D();
             W.Cast(pos);
             Core.DelayAction(() => CastQAfterE(_Player.Position.Shorten(_Player.Position.Extend(Game.CursorPos, 875).To3D(), -Q.Range)), 250);
+            return true;
         }
 
-        public void CastFly(Vector3 pos)
+        public bool CastFly(Vector3 pos)
         {
-            if (!Q.IsReady() || !W.IsReady() || !E.IsReady()) return;
-            pos = _Player.Distance(Game.CursorPos) > W.Range ? _Player.Position.Shorten(pos, -W.Range) : _Player.Position.Extend(pos, W.Range).To3D();
+            pos = _Player.Position.Extend(pos, 875).To3D();
+            pos = _Player.Distance(pos) > W.Range ? _Player.Position.Shorten(pos, -W.Range) : _Player.Position.Extend(pos, W.Range).To3D();
             W.Cast(pos);
-            Core.DelayAction(() => CastQAfterE(_Player.Position.Shorten(_Player.Position.Extend(Game.CursorPos, 875).To3D(), -Q.Range)), 250);
+            Core.DelayAction(() => CastQAfterE(_Player.Position.Shorten(_Player.Position.Extend(pos, 875).To3D(), -Q.Range)), 250);
+            return true;
         }
 
         public void CastQAfterE(Vector3 pos)
         {
             E.Cast();
             Core.DelayAction(() => Q.Cast(pos), 75);
+        }
+
+        public void InsecTarget(Obj_AI_Base from, Obj_AI_Base to)
+        {
+            var insecToPos = to.Position.To2D();
+            var insecPos = from.Position.To2D().Shorten(insecToPos, 100);
+
+            if (!R.IsReady()) return;
+            var flash = Player.Spells.FirstOrDefault(a => a.SData.Name == "summonerflash");
+
+            if (insecPos.Distance(_Player) > (flash != null && flash.IsReady ? 1150 : 700))
+            {
+                Orbwalker.OrbwalkTo(Game.CursorPos);
+            }
+            else
+            {
+                if (_Player.Distance(insecPos) < R.Range)
+                {
+                    Player.CastSpell(SpellSlot.R, insecToPos.To3D());
+                }
+
+                if (Misc.isChecked(ComboMenu, "insecFlashForce") && flash != null && flash.IsReady && insecPos.Distance(_Player) < 400)
+                {
+                    CastFlash(insecPos.To3D());
+                }
+                else if (!CastFly(insecPos.To3D()))
+                {
+                    if (insecPos.Distance(_Player) < 400)
+                    {
+                        CastFlash(insecPos.To3D());
+                        if (_Player.Distance(insecPos) < R.Range)
+                        {
+                            Player.CastSpell(SpellSlot.R, insecToPos.To3D());
+                        }
+                    }
+                }
+            }
+        }
+
+        public void CastFlash(Vector3 position)
+        {
+            var flash = Player.Spells.FirstOrDefault(a => a.SData.Name == "summonerflash");
+            if (flash != null && position.IsValid() && flash.IsReady)
+            {
+                Player.CastSpell(flash.Slot, position);
+            }
         }
     }
 

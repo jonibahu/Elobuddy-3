@@ -24,12 +24,17 @@ namespace Azireno.Util
             return "#" + c.R.ToString("X2") + c.G.ToString("X2") + c.B.ToString("X2");
         }
 
-        public static bool isChecked(Menu obj, String value)
+        public static bool isChecked(Menu obj, string value)
         {
             return obj[value].Cast<CheckBox>().CurrentValue;
         }
 
-        public static int getSliderValue(Menu obj, String value)
+        public static bool isKeyActive(Menu obj, string value)
+        {
+            return obj[value].Cast<KeyBind>().CurrentValue;
+        }
+
+        public static int getSliderValue(Menu obj, string value)
         {
             return obj[value].Cast<Slider>().CurrentValue;
         }

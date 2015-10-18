@@ -12,7 +12,7 @@ namespace Azireno.Modes
          Config
          */
         
-        public static string G_version = "1.0.1";
+        public static string G_version = "1.1.1";
         public static string G_charname = _Player.ChampionName;
 
         /*
