@@ -60,11 +60,16 @@ namespace MAC_Vayne.Util
 
             if (target.HasBuffOfType(BuffType.SpellImmunity) || target.HasBuffOfType(BuffType.SpellShield) || _Player.IsDashing()) return false;
 
+            var predPos = Prediction.Position.PredictUnitPosition(target, 500);
+
             var position = Vayne._Player.Position.Extend(target.Position, Vayne._Player.Distance(target) - getSliderValue(Vayne.CondemnMenu, "condenmErrorMargin")).To3D();
+            var predictPos = Vayne._Player.Position.Extend(predPos, Vayne._Player.Distance(predPos) - getSliderValue(Vayne.CondemnMenu, "condenmErrorMargin")).To3D();
             for (int i = 0; i < 470 - getSliderValue(Vayne.CondemnMenu, "condenmErrorMargin"); i += 10)
             {
                 var cPos = _Player.Position.Extend(position, _Player.Distance(position) + i).To3D();
-                if (cPos.ToNavMeshCell().CollFlags.HasFlag(CollisionFlags.Wall) || cPos.ToNavMeshCell().CollFlags.HasFlag(CollisionFlags.Building))
+                var cPredPos = _Player.Position.Extend(predictPos, _Player.Distance(predictPos) + i).To3D();
+
+                if ((cPredPos.ToNavMeshCell().CollFlags.HasFlag(CollisionFlags.Wall) || cPredPos.ToNavMeshCell().CollFlags.HasFlag(CollisionFlags.Building)) && (cPos.ToNavMeshCell().CollFlags.HasFlag(CollisionFlags.Wall) || cPos.ToNavMeshCell().CollFlags.HasFlag(CollisionFlags.Building)))
                 {
                     return true;
                 }
