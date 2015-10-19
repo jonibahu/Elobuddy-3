@@ -31,6 +31,11 @@ namespace MAC_Vayne.Util
             return obj[value].Cast<Slider>().CurrentValue;
         }
 
+        public static bool isKeyBindActive(Menu obj, String value)
+        {
+            return obj[value].Cast<KeyBind>().CurrentValue;
+        }
+
         public static bool Has2WStacks(this AIHeroClient target)
         {
             return target.Buffs.Any(bu => bu.Name == "vaynesilvereddebuff");
@@ -50,6 +55,44 @@ namespace MAC_Vayne.Util
             return damage;
         }
 
+        public static void Drawing_OnDraw()
+        {
+            if (Game.MapId != GameMapId.SummonersRift) return;
+            Vector2 drakeWallQPos = new Vector2(12050, 4827);
+            Vector2 midWallQPos = new Vector2(6962, 8952);
+            if (drakeWallQPos.Distance(_Player) < 3000)
+                new Circle() { Color = _Player.Distance(drakeWallQPos) <= 100 ? Color.DodgerBlue : Color.White, Radius = 100 }.Draw(drakeWallQPos.To3D());
+            if (midWallQPos.Distance(_Player) < 3000)
+                new Circle() { Color = _Player.Distance(midWallQPos) <= 100 ? Color.DodgerBlue : Color.White, Radius = 100 }.Draw(midWallQPos.To3D());
+
+        }
+
+        public static void WallTumble()
+        {
+            if (Game.MapId != GameMapId.SummonersRift) return;
+            if (!Vayne.Q.IsReady())
+            {
+                Orbwalker.DisableMovement = false;
+                return;
+            }
+            Orbwalker.DisableMovement = true;
+
+            Vector2 drakeWallQPos = new Vector2(11514, 4462);
+            Vector2 midWallQPos = new Vector2(6667, 8794);
+
+            var selectedPos = drakeWallQPos.Distance(_Player) < midWallQPos.Distance(_Player) ? drakeWallQPos : midWallQPos;
+            var walkPos = drakeWallQPos.Distance(_Player) < midWallQPos.Distance(_Player)
+                ? new Vector2(12050, 4827)
+                : new Vector2(6962, 8952);
+            if (_Player.Distance(walkPos) < 200 && _Player.Distance(walkPos) > 60)
+            {
+                Player.IssueOrder(GameObjectOrder.MoveTo, walkPos.To3D());
+            }
+            else if (_Player.Distance(walkPos) <= 50)
+            {
+                Player.CastSpell(SpellSlot.Q, selectedPos.To3D());
+            }
+        }
 
         public static bool IsCondemnable(AIHeroClient target)
         {
