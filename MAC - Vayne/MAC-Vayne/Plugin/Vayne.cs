@@ -22,7 +22,7 @@ namespace MAC_Vayne.Plugin
          Config
          */
 
-        public static string G_version = "1.2.1";
+        public static string G_version = "1.4.1";
         public static string G_charname = _Player.ChampionName;
 
         /*
