@@ -22,7 +22,7 @@ namespace MAC_Vayne.Plugin
          Config
          */
 
-        public static string G_version = "1.2.1";
+        public static string G_version = "1.5.1";
         public static string G_charname = _Player.ChampionName;
 
         /*
@@ -100,6 +100,8 @@ namespace MAC_Vayne.Plugin
             DrawMenu.Add("drawAARange", new CheckBox("Draw Auto Attack Range", true));
             DrawMenu.Add("drawQ", new CheckBox("Draw Q Range", true));
             DrawMenu.Add("drawE", new CheckBox("Draw E Range", true));
+            DrawMenu.Add("drawTumblePos", new CheckBox("Draw Tumble Pos", true));
+            DrawMenu.Add("wallTumble", new KeyBind("Wall Tumble", false, KeyBind.BindTypes.HoldActive, 'W'));
             DrawMenu.Add("drawCondemnPos", new CheckBox("Draw Condemn Position", true));
 
             ComboMenu = Menu.AddSubMenu("Combo - " + G_charname, "vaniaCombo");
@@ -187,6 +189,11 @@ namespace MAC_Vayne.Plugin
                     Drawing.DrawLine(realStart, realEnd, 2f, Color.Red);
                     new Circle() { Color = Color.Red, Radius = 60, BorderWidth = 2f }.Draw(condemnPos.To3D());
                 }
+            }
+
+            if(Misc.isChecked(DrawMenu, "drawTumblePos"))
+            {
+                Misc.Drawing_OnDraw();
             }
 
         }
@@ -410,6 +417,15 @@ namespace MAC_Vayne.Plugin
                     Orbwalker.ForcedTarget = null;
                     OnHarass();
                     break;
+            }
+
+            if (Misc.isKeyBindActive(DrawMenu, "wallTumble"))
+            {
+                Misc.WallTumble();
+            }
+            else
+            {
+                Orbwalker.DisableMovement = false;
             }
         }
     }
