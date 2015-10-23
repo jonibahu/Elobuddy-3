@@ -84,6 +84,7 @@
     <Compile Include="Controller\Modes\Combo.cs" />
     <Compile Include="Controller\RiposteManager.cs" />
     <Compile Include="Model\Enum\EnumModeManager.cs" />
+    <Compile Include="Model\Languages\Turkish.cs" />
     <Compile Include="Model\ModeBase.cs" />
     <Compile Include="Controller\ModeManager.cs" />
     <Compile Include="Controller\PassiveController.cs" />

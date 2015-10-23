@@ -57,7 +57,7 @@ namespace Ass_Fiora.Model
             #region Language Selector
 
             MiscMenu = Menu.AddSubMenu("Misc - " + GCharname, GCharname + "Misc");
-            var sliderValue = MiscMenu.Add("language", new Slider("Language", 0, 0, 4));
+            var sliderValue = MiscMenu.Add("language", new Slider("Language", 0, 0, 5));
             sliderValue.OnValueChange += delegate
             {
                 sliderValue.DisplayName = "Language: " + System.Enum.GetName(typeof(EnumLanguage), Misc.GetSliderValue(MiscMenu, "language"));
@@ -82,6 +82,9 @@ namespace Ass_Fiora.Model
                     break;
                 case EnumLanguage.Francais:
                     language = new Francais();
+                    break;
+                case EnumLanguage.Turkish:
+                    language = new Turkish();
                     break;
                 default:
                     language = new English();
