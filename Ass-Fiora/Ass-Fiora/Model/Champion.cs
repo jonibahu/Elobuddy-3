@@ -125,7 +125,7 @@ namespace Ass_Fiora.Model
             LastHitMenu.Add("lhMana", new Slider(language.Dictionary[EnumContext.MinimunMana], 50, 1, 100));
             LastHitMenu.AddGroupLabel("Q " + language.Dictionary[EnumContext.Settings]);
             LastHitMenu.Add("lhQ", new CheckBox(language.Dictionary[EnumContext.Use] + " Q", true));
-            LastHitMenu.AddGroupLabel("E " + language.Dictionary[EnumContext.Settings]);
+            LastHitMenu.AddGroupLabel("W " + language.Dictionary[EnumContext.Settings]);
             LastHitMenu.Add("lhW", new CheckBox(language.Dictionary[EnumContext.Use] + " W", true));
 
             LaneClearMenu = Menu.AddSubMenu(language.Dictionary[EnumContext.LaneClear] + " - " + GCharname, GCharname + "LaneClear");
@@ -147,11 +147,12 @@ namespace Ass_Fiora.Model
 
         public override void OnAfterAttack(AttackableUnit target, EventArgs args)
         {
-            if(Orbwalker.ActiveModesFlags == Orbwalker.ActiveModes.None) return;
+            if (Orbwalker.ActiveModesFlags == Orbwalker.ActiveModes.None || !target.IsValidTarget() || Orbwalker.ActiveModesFlags == Orbwalker.ActiveModes.LastHit) return;
+            
 
             if (E.IsReady() && ((Misc.IsChecked(ComboMenu, "comboE") && Orbwalker.ActiveModesFlags == Orbwalker.ActiveModes.Combo) 
                 || (Misc.IsChecked(HarassMenu, "hsE") && Orbwalker.ActiveModesFlags == Orbwalker.ActiveModes.Harass && ManaManager.CanUseSpell(HarassMenu, "hsMana"))
-                || (Misc.IsChecked(HarassMenu, "jcE") && Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear) && ManaManager.CanUseSpell(JungleClearMenu, "jcMana"))
+                || (Misc.IsChecked(JungleClearMenu, "jcE") && Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear) && ManaManager.CanUseSpell(JungleClearMenu, "jcMana"))
                 || (Misc.IsChecked(LaneClearMenu, "lcE") && Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear) && ManaManager.CanUseSpell(LaneClearMenu, "lcMana"))))
             {
                 E.Cast();
