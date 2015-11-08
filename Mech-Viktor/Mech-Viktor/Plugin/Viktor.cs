@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Enumerations;
@@ -220,6 +220,17 @@ namespace Mech_Viktor.Plugin
                 return;
             
             if (Util.Misc.isChecked(ComboMenu, "comboR") && R.IsReady())
+            {
+                /*
+                OverKill protection
+                */
+                if (DmgLib.possibleDamage(_target, false) > _target.Health)
+                    return;
+
+                if (DmgLib.possibleDamage(_target) > _target.Health && !Q.IsReady() && !E.IsReady())
+                    R.Cast(_target);
+
+            }
 
             if (Util.Misc.isChecked(ComboMenu, "comboW") && W.IsReady() && _Player.Distance(_target) < W.Range - 100)
             {
