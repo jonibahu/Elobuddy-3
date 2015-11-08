@@ -221,13 +221,6 @@ namespace Mech_Viktor.Plugin
             
             if (Util.Misc.isChecked(ComboMenu, "comboR") && R.IsReady())
             {
-                /*
-                OverKill protection
-                */
-                if (DmgLib.possibleDamage(_target, false) > _target.Health)
-                    return;
-
-                if (DmgLib.possibleDamage(_target) > _target.Health && !Q.IsReady() && !E.IsReady())
                     R.Cast(_target);
 
             }
